@@ -1,10 +1,16 @@
-import { MachineConfig } from 'xstate'
+import { MachineConfig } from 'xstate';
 
-import { Context, StateSchema, MachineEvents } from './types'
+import { Context, StateSchema, MachineEvents } from './types';
 
 export const config: MachineConfig<Context, StateSchema, MachineEvents> = {
   id: 'oidc',
   initial: 'authorization',
+  on: {
+    START_AUTH: {
+      actions: ['logger'],
+      target: 'authorization',
+    },
+  },
   states: {
     authorization: {
       entry: ['logger'],
@@ -57,4 +63,4 @@ export const config: MachineConfig<Context, StateSchema, MachineEvents> = {
       },
     },
   },
-}
+};
