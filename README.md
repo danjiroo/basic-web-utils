@@ -1,5 +1,3 @@
-# README
-
 # <h1 style="color: #1abc9c; font-weight: bold; letter-spacing: 5px; text-transform: lowercase;">USE OIDC</h1>
 
 useIDC is a client side SDK that establishes commnication between Open ID Connect Identity Server. This library is designed for Web Apps and Node.js applications. useOIDC adheres to PCKE extension to OAuth which facilitates secure authorization code in public clients.
@@ -7,13 +5,13 @@ useIDC is a client side SDK that establishes commnication between Open ID Connec
 ## Import useOIDC to an existing project
 
 ```
-yarn add @cafegene/utils
+yarn add @pandolink/utils
 ```
 
 or
 
 ```
-npm install @cafegene/utils
+npm install @pandolink/utils
 ```
 
 ```javascript
