@@ -26,7 +26,7 @@ npm install @pandolink/utils
 
 ```javascript
 // Top Level Component
-import { useOIDC } from '@cafegene/utils';
+import { useOIDC } from '@pandolink/utils';
 
 const App: React.FC = () => {
     const [user] = useOIDC()
