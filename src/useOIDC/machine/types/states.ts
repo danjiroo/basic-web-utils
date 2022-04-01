@@ -1,5 +1,5 @@
-import { AnyStateNodeDefinition, StateNodeDefinition } from 'xstate'
-import { Context, MachineEvents } from '..'
+import { AnyStateNodeDefinition, StateNodeDefinition } from 'xstate';
+import { Context, MachineEvents } from '..';
 
 export interface StateSchema {
   states: {
@@ -7,17 +7,18 @@ export interface StateSchema {
       Context,
       AnyStateNodeDefinition,
       MachineEvents
-    >
+    >;
     authentication: StateNodeDefinition<
       Context,
       AnyStateNodeDefinition,
       MachineEvents
-    >
+    >;
     authenticated: StateNodeDefinition<
       Context,
       AnyStateNodeDefinition,
       MachineEvents
-    >
-    retry: StateNodeDefinition<Context, AnyStateNodeDefinition, MachineEvents>
-  }
+    >;
+    logOut: StateNodeDefinition<Context, AnyStateNodeDefinition, MachineEvents>;
+    retry: StateNodeDefinition<Context, AnyStateNodeDefinition, MachineEvents>;
+  };
 }

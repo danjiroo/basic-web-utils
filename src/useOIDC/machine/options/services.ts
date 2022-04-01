@@ -21,8 +21,12 @@ import {
 } from '@openid/appauth';
 import { NoHashQueryStringUtils } from '../../noHashQueryStringUtils';
 
+import { convertToQueryParams } from '../../utils';
+
 const {
-  REACT_APP_LOGIN_URI = 'https://login.staging.pandolink.com',
+  // REACT_APP_LOGIN_URI = 'https://login.staging.pandolink.com',
+  REACT_APP_AUTH_SERVER = 'https://login.staging.pandolink.com',
+  REACT_APP_AUTH_SERVER_LOGOUT = 'https://login.staging.pandolink.com/connect/endsession',
   REACT_APP_REDIRECT_URI = '',
   REACT_APP_SCOPE = '',
   REACT_APP_CLIENT_SECRET = '',
@@ -43,7 +47,7 @@ export const services: any = {
         (async () => {
           try {
             AuthorizationServiceConfiguration.fetchFromIssuer(
-              REACT_APP_LOGIN_URI!,
+              REACT_APP_AUTH_SERVER!,
               new FetchRequestor()
             ).then((response) => {
               const authRequest = new AuthorizationRequest({
@@ -113,7 +117,7 @@ export const services: any = {
               : {},
         });
         AuthorizationServiceConfiguration.fetchFromIssuer(
-          REACT_APP_LOGIN_URI!,
+          REACT_APP_AUTH_SERVER!,
           new FetchRequestor()
         )
           .then((response) => {
@@ -139,4 +143,29 @@ export const services: any = {
       authorizationHandler.completeAuthorizationRequestIfPossible();
     })();
   },
+  logOutUser:
+    ({ accessToken }: Context) =>
+    (send: Sender<any>) => {
+      console.log('INSIDE LOGOUT USER SERVICE:', accessToken);
+      const queryParams = convertToQueryParams({
+        redirect_uri: REACT_APP_REDIRECT_URI,
+        id_token_hint: accessToken,
+      });
+      window.location.href = REACT_APP_AUTH_SERVER_LOGOUT + queryParams;
+    },
 };
+
+export const logout = (token: string) => {
+  const queryParams = convertToQueryParams({
+    redirect_uri: REACT_APP_REDIRECT_URI,
+    id_token_hint: token,
+  });
+  window.location.href = REACT_APP_AUTH_SERVER_LOGOUT + queryParams;
+};
+
+export const logoutUser = (token: string) => async (dispatch: any) => {
+  // dispatch(Actions.logoutUser());
+  logout(token);
+};
+
+// logoutUser('1234')

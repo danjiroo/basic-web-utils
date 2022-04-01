@@ -34,9 +34,14 @@ export interface StartAuth {
   type: 'START_AUTH';
 }
 
+export interface Logout {
+  type: 'LOG_OUT';
+}
+
 export type MachineEvents =
   | AuthorizedEvent
   | StartAuth
   | AuthenticationError
   | CheckAuthSuccess
-  | AuthenticatedEvent;
+  | AuthenticatedEvent
+  | Logout;

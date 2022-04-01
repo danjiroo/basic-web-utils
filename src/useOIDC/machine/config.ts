@@ -10,6 +10,10 @@ export const config: MachineConfig<Context, StateSchema, MachineEvents> = {
       actions: ['logger'],
       target: 'authorization',
     },
+    LOG_OUT: {
+      actions: [''],
+      target: 'logOut',
+    },
   },
   states: {
     authorization: {
@@ -51,6 +55,13 @@ export const config: MachineConfig<Context, StateSchema, MachineEvents> = {
     authenticated: {
       id: 'authenticated',
       entry: ['logger'],
+    },
+    logOut: {
+      id: 'logOut',
+      invoke: {
+        id: 'log-out-user',
+        src: 'logOutUser',
+      },
     },
     retry: {
       id: 'retry',
