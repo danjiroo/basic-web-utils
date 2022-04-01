@@ -4,28 +4,24 @@ import { useInterpret, useSelector } from '@xstate/react';
 
 import { config, options } from './machine';
 
-import { Context } from './types';
-import { usePandoLogger } from '../usePandoLogger';
+import { Context } from './machine';
+import { usePandoLogger } from '../';
 
 const default_context: Context = {
-  isAuthorized: false,
-  isAuthenticated: false,
-  isLoggedIn: false,
   accessToken: null,
+  expiresIn: null,
+  idToken: null,
+  issuedAt: null,
+  refreshToken: null,
+  scope: null,
+  tokenType: null,
+  isAuthenticated: false,
   authenticationAttempts: 0,
   maxAuthenticationAttempts: 3,
 };
 
-export const spawn = <Config, Options>(config: Config, options: Options) => {
-  const machineConfig = {
-    ...config,
-    context: {
-      ...default_context,
-    },
-  };
-
-  return createMachine(machineConfig, options);
-};
+export const spawn = <Config, Options>(config: Config, options: Options) =>
+  createMachine({ ...config, context: { ...default_context } }, options);
 
 export const useOIDC = (): [Context, Sender<AnyEventObject>] => {
   const stateDefinition = localStorage.getItem('oidc');
@@ -35,7 +31,7 @@ export const useOIDC = (): [Context, Sender<AnyEventObject>] => {
     {
       state: stateDefinition ? JSON.parse(stateDefinition) : undefined,
       actions: {
-        ...options.actions,
+        // ...options.actions,
         logger: (context, event, { state }) =>
           usePandoLogger({
             name: (config?.id ?? noId).toUpperCase(),
@@ -47,9 +43,7 @@ export const useOIDC = (): [Context, Sender<AnyEventObject>] => {
     (state) => localStorage.setItem('oidc', JSON.stringify(state))
   );
   const { send } = recordService;
-  const selectedState = (state: State<Context>) => {
-    return state.context;
-  };
+  const selectedState = (state: State<Context>) => state.context;
   const compare = <T,>(prev: T, current: T) => prev === current;
   const user = useSelector(recordService, selectedState, compare);
   return [user, send];

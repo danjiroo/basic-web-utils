@@ -4,18 +4,19 @@ import { ActionFunctionMap, assign } from 'xstate'
 import { Context, MachineEvents } from '../types'
 
 export const actions: ActionFunctionMap<Context, MachineEvents> = {
-  assignAuthorizationResults: assign({
-    isAuthorized: (_, { payload }: any) => payload.isAuthoriized,
-    isLoggedIn: (_, { payload }: any) => payload.isLoggedIn,
-  }),
-
-  assignAccessToken: assign({
-    accessToken: (_, { payload }: any) => payload.accessToken,
-    isAuthenticated: (_, { payload }: any) => payload.isAuthenticated,
-  }),
+  assignAuthenticationResponse: assign((context, { payload }: any) => ({
+    ...context,
+    ...payload,
+  })),
 
   incrementAuthenticationAttempts: assign({
-    authenticationAttempts: ({ authenticationAttempts }) =>
+    authenticationAttempts: ({ authenticationAttempts = 0 }) =>
       authenticationAttempts + 1,
   }),
+
+  removeAccessToken: assign((context) => ({
+    ...context,
+    isAuthenticated: false,
+    accessToken: null,
+  })),
 }

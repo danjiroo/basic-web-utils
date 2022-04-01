@@ -10,8 +10,8 @@ export const options: MachineOptions<Context, MachineEvents> = {
   delays: {},
   guards: {
     hasReachMaxAuthenticationAttempts: ({
-      authenticationAttempts,
-      maxAuthenticationAttempts,
+      authenticationAttempts = 0,
+      maxAuthenticationAttempts = 3,
     }) => !!(authenticationAttempts < maxAuthenticationAttempts),
   },
 }

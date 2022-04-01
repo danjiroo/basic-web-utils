@@ -1,6 +1,6 @@
-import { MachineConfig } from 'xstate';
+import { MachineConfig } from 'xstate'
 
-import { Context, StateSchema, MachineEvents } from './types';
+import { Context, StateSchema, MachineEvents } from './types'
 
 export const config: MachineConfig<Context, StateSchema, MachineEvents> = {
   id: 'oidc',
@@ -21,7 +21,6 @@ export const config: MachineConfig<Context, StateSchema, MachineEvents> = {
       },
       on: {
         AUTHORIZED: {
-          actions: ['assignAuthorizationResults'],
           target: 'authentication',
         },
       },
@@ -35,7 +34,7 @@ export const config: MachineConfig<Context, StateSchema, MachineEvents> = {
       },
       on: {
         AUTHENTICATED: {
-          actions: ['logger', 'assignAccessToken'],
+          actions: ['logger', 'assignAuthenticationResponse'],
           target: 'authenticated',
         },
         AUTHENTICATION_ERROR: {
@@ -56,20 +55,29 @@ export const config: MachineConfig<Context, StateSchema, MachineEvents> = {
           actions: ['logger'],
           target: 'logOut',
         },
-        LOG_OUT_SUCCESS: {
-          actions: ['logger'],
-          target: 'authorization',
-        },
       },
     },
     logOut: {
       id: 'logOut',
-      entry: ['logger'],
       invoke: {
         id: 'log-out-user',
         src: 'logOutUser',
       },
+      on: {
+        LOG_OUT_SUCCESS: {
+          actions: ['logger', 'removeAccessToken'],
+          target: 'authorization',
+        },
+      },
     },
+    logOutSuccess: {
+      entry: ['logger'],
+      invoke: {
+        id: 'remove-local-storage-items',
+        src: 'removeLocalStorageItems',
+      },
+    },
+
     retry: {
       id: 'retry',
       entry: ['logger'],
@@ -81,4 +89,4 @@ export const config: MachineConfig<Context, StateSchema, MachineEvents> = {
       },
     },
   },
-};
+}

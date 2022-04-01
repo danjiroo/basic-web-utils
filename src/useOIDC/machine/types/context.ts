@@ -1,8 +1,12 @@
 export interface Context {
-  isAuthorized: boolean;
-  isAuthenticated: boolean;
-  isLoggedIn: boolean;
-  accessToken: Partial<string> | null;
-  authenticationAttempts: number;
-  maxAuthenticationAttempts: 3;
+  accessToken?: string | null
+  expiresIn?: null
+  idToken?: string | null
+  issuedAt?: number | null
+  refreshToken?: string | null
+  scope?: string | null
+  tokenType?: string | null
+  isAuthenticated?: boolean
+  authenticationAttempts?: number
+  maxAuthenticationAttempts?: 3
 }

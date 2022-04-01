@@ -1,45 +1,42 @@
 export interface CheckAuthSuccess {
-  type: 'CHECK_AUTH_SUCCESS';
+  type: 'CHECK_AUTH_SUCCESS'
   payload: {
-    isAuthenticated: boolean;
-    accessToken: string;
-  };
+    isAuthenticated: boolean
+    accessToken: string
+  }
 }
 
 export interface AuthenticatedEvent {
-  type: 'AUTHENTICATED';
+  type: 'AUTHENTICATED'
 }
 
 export interface CheckAuthSuccess {
-  type: 'CHECK_AUTH_SUCCESS';
+  type: 'CHECK_AUTH_SUCCESS'
   payload: {
-    isAuthenticated: boolean;
-    accessToken: string;
-  };
+    isAuthenticated: boolean
+    accessToken: string
+  }
 }
 
 export interface AuthorizedEvent {
-  type: 'AUTHORIZED';
-  payload: {
-    isAuthoriized: boolean;
-    isLoggedIn: boolean;
-  };
+  type: 'AUTHORIZED'
 }
 
 export interface AuthenticationError {
-  type: 'AUTHENTICATION_ERROR';
+  type: 'AUTHENTICATION_ERROR'
+  payload: any
 }
 
 export interface StartAuth {
-  type: 'START_AUTH';
+  type: 'START_AUTH'
 }
 
 export interface Logout {
-  type: 'LOG_OUT';
+  type: 'LOG_OUT'
 }
 
 export interface Loggedout {
-  type: 'LOG_OUT_SUCCESS';
+  type: 'LOG_OUT_SUCCESS'
 }
 export type MachineEvents =
   | AuthorizedEvent
@@ -48,4 +45,4 @@ export type MachineEvents =
   | CheckAuthSuccess
   | AuthenticatedEvent
   | Logout
-  | Loggedout;
+  | Loggedout
