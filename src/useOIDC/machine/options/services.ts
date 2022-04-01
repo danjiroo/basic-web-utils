@@ -154,18 +154,3 @@ export const services: any = {
       window.location.href = REACT_APP_AUTH_SERVER_LOGOUT + queryParams;
     },
 };
-
-export const logout = (token: string) => {
-  const queryParams = convertToQueryParams({
-    redirect_uri: REACT_APP_REDIRECT_URI,
-    id_token_hint: token,
-  });
-  window.location.href = REACT_APP_AUTH_SERVER_LOGOUT + queryParams;
-};
-
-export const logoutUser = (token: string) => async (dispatch: any) => {
-  // dispatch(Actions.logoutUser());
-  logout(token);
-};
-
-// logoutUser('1234')
