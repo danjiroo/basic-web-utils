@@ -152,5 +152,10 @@ export const services: any = {
         post_logout_redirect_uri: REACT_APP_REDIRECT_URI,
       });
       window.location.href = REACT_APP_AUTH_SERVER_LOGOUT + queryParams;
+      const URL = window.location.href;
+      if (URL === 'https://login.staging.pandolink.com/Account/Logout')
+        send({
+          type: 'LOG_OUT_SUCCESS',
+        });
     },
 };

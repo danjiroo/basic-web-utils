@@ -38,10 +38,14 @@ export interface Logout {
   type: 'LOG_OUT';
 }
 
+export interface Loggedout {
+  type: 'LOG_OUT_SUCCESS';
+}
 export type MachineEvents =
   | AuthorizedEvent
   | StartAuth
   | AuthenticationError
   | CheckAuthSuccess
   | AuthenticatedEvent
-  | Logout;
+  | Logout
+  | Loggedout;
