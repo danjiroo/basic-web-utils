@@ -148,8 +148,8 @@ export const services: any = {
     (send: Sender<any>) => {
       console.log('INSIDE LOGOUT USER SERVICE:', accessToken);
       const queryParams = convertToQueryParams({
-        redirect_uri: REACT_APP_REDIRECT_URI,
         id_token_hint: accessToken,
+        post_logout_redirect_uri: REACT_APP_REDIRECT_URI,
       });
       window.location.href = REACT_APP_AUTH_SERVER_LOGOUT + queryParams;
     },
