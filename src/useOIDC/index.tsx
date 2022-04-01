@@ -5,6 +5,7 @@ import { useInterpret, useSelector } from '@xstate/react';
 import { config, options } from './machine';
 
 import { Context } from './types';
+import { usePandoLogger } from '../usePandoLogger';
 
 const default_context: Context = {
   isAuthorized: false,
@@ -28,10 +29,20 @@ export const spawn = <Config, Options>(config: Config, options: Options) => {
 
 export const useOIDC = (): [Context, Sender<AnyEventObject>] => {
   const stateDefinition = localStorage.getItem('oidc');
+  const noId = `idless-machine-${new Date().toLocaleTimeString()}`;
   const recordService = useInterpret(
     spawn(config, options),
     {
       state: stateDefinition ? JSON.parse(stateDefinition) : undefined,
+      actions: {
+        ...options.actions,
+        logger: (context, event, { state }) =>
+          usePandoLogger({
+            name: (config?.id ?? noId).toUpperCase(),
+            subTitle: event.type,
+            body: { context, event, currentState: state.value },
+          }),
+      },
     },
     (state) => localStorage.setItem('oidc', JSON.stringify(state))
   );

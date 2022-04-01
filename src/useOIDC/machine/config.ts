@@ -53,17 +53,18 @@ export const config: MachineConfig<Context, StateSchema, MachineEvents> = {
       entry: ['logger'],
       on: {
         LOG_OUT: {
-          actions: [''],
+          actions: ['logger'],
           target: 'logOut',
         },
         LOG_OUT_SUCCESS: {
-          actions: [''],
+          actions: ['logger'],
           target: 'authorization',
         },
       },
     },
     logOut: {
       id: 'logOut',
+      entry: ['logger'],
       invoke: {
         id: 'log-out-user',
         src: 'logOutUser',
