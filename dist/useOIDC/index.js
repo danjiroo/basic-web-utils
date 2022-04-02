@@ -4,8 +4,10 @@ exports.useOIDC = exports.spawn = void 0;
 /* eslint-disable react-hooks/rules-of-hooks */
 const xstate_1 = require("xstate");
 const react_1 = require("@xstate/react");
+const react_2 = require("react");
 const machine_1 = require("./machine");
 const __1 = require("../");
+const { REACT_APP_REDIRECT_URI } = process.env;
 const default_context = {
     accessToken: null,
     expiresIn: null,
@@ -41,6 +43,11 @@ const useOIDC = () => {
     const selectedState = (state) => state.context;
     const compare = (prev, current) => prev === current;
     const user = (0, react_1.useSelector)(recordService, selectedState, compare);
+    const URL = window.location.href;
+    (0, react_2.useEffect)(() => {
+        if (URL === `${REACT_APP_REDIRECT_URI}/`)
+            send('START_AUTH');
+    }, []);
     return [user, send];
 };
 exports.useOIDC = useOIDC;

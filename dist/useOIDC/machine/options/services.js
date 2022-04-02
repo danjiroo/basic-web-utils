@@ -28,6 +28,7 @@ const authorizationHandler = new appauth_1.RedirectRequestHandler(new appauth_1.
 exports.services = {
     checkAuthorization: ({ accessToken }) => (send) => __awaiter(void 0, void 0, void 0, function* () {
         if (!accessToken) {
+            ;
             (() => __awaiter(void 0, void 0, void 0, function* () {
                 try {
                     appauth_1.AuthorizationServiceConfiguration.fetchFromIssuer(REACT_APP_AUTH_SERVER, new appauth_1.FetchRequestor()).then((response) => {
@@ -58,6 +59,7 @@ exports.services = {
         }
     }),
     checkAuthentication: () => (send) => {
+        ;
         (() => {
             const tokenHandler = new appauth_1.BaseTokenRequestHandler(new appauth_1.FetchRequestor());
             const notifier = new appauth_1.AuthorizationNotifier();

@@ -1,1 +1,1 @@
-export { convertToQueryParams } from './convertToQueryParams';
+export { convertToQueryParams } from './convertToQueryParams'

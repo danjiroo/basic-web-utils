@@ -1,15 +1,15 @@
 export interface IParams<T> {
-  [key: string]: T;
+  [key: string]: T
 }
 export const convertToQueryParams = <Params>(params: IParams<Params>) => {
-  let queryParams: string = '';
+  let queryParams = ''
   if (params) {
     queryParams = Object.keys(params)
       .map((key) => key + '=' + params[key])
-      .join('&');
+      .join('&')
     if (queryParams.length > 0) {
-      queryParams = '?' + queryParams;
+      queryParams = '?' + queryParams
     }
   }
-  return queryParams;
-};
+  return queryParams
+}

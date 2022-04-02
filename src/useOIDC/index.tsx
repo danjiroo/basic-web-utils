@@ -1,11 +1,12 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { createMachine, State, AnyEventObject, Sender } from 'xstate';
 import { useInterpret, useSelector } from '@xstate/react';
-
+import { useEffect } from 'react';
 import { config, options } from './machine';
 
 import { Context } from './machine';
 import { usePandoLogger } from '../';
+const { REACT_APP_REDIRECT_URI } = process.env;
 
 const default_context: Context = {
   accessToken: null,
@@ -46,5 +47,10 @@ export const useOIDC = (): [Context, Sender<AnyEventObject>] => {
   const selectedState = (state: State<Context>) => state.context;
   const compare = <T,>(prev: T, current: T) => prev === current;
   const user = useSelector(recordService, selectedState, compare);
+
+  const URL = window.location.href;
+  useEffect(() => {
+    if (URL === `${REACT_APP_REDIRECT_URI}/`) send('START_AUTH');
+  }, []);
   return [user, send];
 };
