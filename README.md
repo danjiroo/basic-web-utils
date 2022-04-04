@@ -41,15 +41,7 @@ const App: React.FC = () => {
 }
 ```
 
-<div style="width: 640px; height: 480px; margin: 10px; position: relative;">
-  <iframe
-    allowfullscreen
-    frameborder="0"
-    style="width:640px; height:480px"
-    src="https://lucid.app/documents/embeddedchart/46fb8887-3f64-4701-a6e6-b6d61321276e"
-    id="4I576WooT62T"
-  ></iframe>
-</div>
+<h3><a href="https://lucid.app/documents/embeddedchart/46fb8887-3f64-4701-a6e6-b6d61321276e" target="_blank">View flow diagram here</a>
 
 useOIDC performs authorization, authentication and request an access token for your react application.
 
