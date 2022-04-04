@@ -1,6 +1,6 @@
 # <h1 style="color: #1abc9c; font-weight: bold; letter-spacing: 5px; text-transform: lowercase;">USE OIDC</h1>
 
-useIDC is a client side SDK that establishes commnication between Open ID Connect Identity Server. This library is designed for Web Apps and Node.js applications. useOIDC adheres to PCKE extension to OAuth which facilitates secure authorization code in public clients.
+useIDC is a client side SDK that establishes communication between Open ID Connect Identity Server. This library is designed for Web Apps and Node.js applications. useOIDC adheres to PCKE extension to OAuth which facilitates secure authorization code in public clients.
 
 ## Import useOIDC to an existing project
 
@@ -57,3 +57,5 @@ Your application will be redirected to the url you provided in the REACT_APP_LOG
 To request for an access token, that code will then be taken by useOIDC and use it to authenticate you. If authenticated the Open ID Identity server will return an acceess token.
 
 Use that access token to to request for data from the GRPC server.
+
+<div style="width: 640px; height: 480px; margin: 10px; position: relative;"><iframe allowfullscreen frameborder="0" style="width:640px; height:480px" src="https://lucid.app/documents/embeddedchart/46fb8887-3f64-4701-a6e6-b6d61321276e" id="4I576WooT62T"></iframe></div>
