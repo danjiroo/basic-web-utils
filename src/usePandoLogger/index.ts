@@ -1,6 +1,6 @@
 import { PandoLoggerParams } from './types';
 
-export const usePandoLogger = ({ name, subTitle, body }: PandoLoggerParams) => {
+export const pandoLogger = ({ name, subTitle, body }: PandoLoggerParams) => {
   console.log(
     `%c${name}`,
     `font-weight: bold;

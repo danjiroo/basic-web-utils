@@ -7,30 +7,25 @@
     "dist"
   ],
   "dependencies": {
-    "@openid/appauth": "^1.3.1",
-    "@testing-library/jest-dom": "^5.16.3",
+    "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.4.1",
     "@types/node": "^16.11.26",
     "@types/react": "^17.0.43",
     "@types/react-dom": "^17.0.14",
-    "@xstate/react": "^2.0.1",
-    "axios": "^0.26.1",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
     "react-scripts": "5.0.0",
-    "semver": "^7.3.5",
     "typescript": "^4.6.3",
-    "web-vitals": "^2.1.4",
-    "xstate": "^4.30.6"
+    "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "rm -rf ./dist && tsc",
+    "publish": "npm publish --access public",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "publish": "npm publish --access public"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [

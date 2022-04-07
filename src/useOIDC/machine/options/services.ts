@@ -27,10 +27,10 @@ const {
   // REACT_APP_LOGIN_URI = 'https://login.staging.pandolink.com',
   REACT_APP_AUTH_SERVER = 'https://login.staging.pandolink.com',
   REACT_APP_AUTH_SERVER_LOGOUT = 'https://login.staging.pandolink.com/connect/endsession',
-  REACT_APP_REDIRECT_URI = '',
+  REACT_APP_REDIRECT_URI = 'http://localhost:3000',
   REACT_APP_SCOPE = '',
-  REACT_APP_CLIENT_SECRET = '',
-  REACT_APP_CLIENT_ID = '',
+  REACT_APP_CLIENT_SECRET = 'wbtCpQYNhYcogScfRcZDAMzMYsfKcRzpEvB',
+  REACT_APP_CLIENT_ID = '81CD8602-3B16-4AD6-81EC-89D6B9465F80',
 } = process.env
 
 const authorizationHandler = new RedirectRequestHandler(
@@ -51,13 +51,13 @@ export const services: any = {
               new FetchRequestor()
             ).then((response) => {
               const authRequest = new AuthorizationRequest({
-                client_id: REACT_APP_CLIENT_ID!,
-                redirect_uri: REACT_APP_REDIRECT_URI!,
-                scope: REACT_APP_SCOPE!,
+                client_id: REACT_APP_CLIENT_ID,
+                redirect_uri: REACT_APP_REDIRECT_URI,
+                scope: REACT_APP_SCOPE,
                 response_type: AuthorizationRequest.RESPONSE_TYPE_CODE,
                 state: undefined,
                 extras: {
-                  client_secret: REACT_APP_CLIENT_SECRET!,
+                  client_secret: REACT_APP_CLIENT_SECRET,
                   login_code: '',
                   user_id: '',
                   event_id: '',
@@ -89,8 +89,8 @@ export const services: any = {
         if (error) console.log('SET AUTHORIZATION LISTENER ERROR', error)
         //  CREATE TOKEN REQUEST
         const requestToken = new TokenRequest({
-          client_id: REACT_APP_CLIENT_ID!,
-          redirect_uri: REACT_APP_REDIRECT_URI!,
+          client_id: REACT_APP_CLIENT_ID,
+          redirect_uri: REACT_APP_REDIRECT_URI,
           grant_type: GRANT_TYPE_AUTHORIZATION_CODE,
           code: response?.code,
           refresh_token: undefined,
@@ -98,7 +98,7 @@ export const services: any = {
             request && request.internal
               ? {
                   ...request.internal,
-                  client_secret: REACT_APP_CLIENT_SECRET!,
+                  client_secret: REACT_APP_CLIENT_SECRET,
                   scope: REACT_APP_SCOPE!,
                 }
               : {},
@@ -111,6 +111,7 @@ export const services: any = {
             tokenHandler.performTokenRequest(response, requestToken)
           )
           .then((response) => {
+            console.log('HAHAHAHA:', response)
             const { accessToken } = response
             accessToken &&
               send({
@@ -146,4 +147,38 @@ export const services: any = {
         })
       }
     },
+  notifiyIdentityServerForlogoutEvent:
+    ({ idToken }: Context) =>
+    async (send: Sender<any>) => {
+      const queryParams = convertToQueryParams({
+        id_token_hint: idToken,
+        post_logout_redirect_uri: REACT_APP_REDIRECT_URI,
+      })
+      const { data } = await axios.get(
+        `${REACT_APP_AUTH_SERVER_LOGOUT}${queryParams}`
+      )
+      // window.location.href = REACT_APP_AUTH_SERVER_LOGOUT + queryParams
+      if (data) {
+        console.log('DATA DATA:', data)
+        send({
+          type: 'SERVER_NOTIFIED',
+        })
+      }
+    },
+  removeLocalStorageItems: () => {
+    try {
+      localStorage.removeItem('oidc')
+      localStorage.clear()
+    } catch (e) {
+      console.log('ERROR REMOVING LOCAL STORAGE')
+    }
+  },
+  emptyLocalStorage: () => {
+    try {
+      localStorage.removeItem('oidc')
+      localStorage.clear()
+    } catch (e) {
+      console.log('ERROR EMPTYING LOCAL STORAGE')
+    }
+  },
 }

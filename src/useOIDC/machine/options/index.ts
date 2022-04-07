@@ -13,5 +13,9 @@ export const options: MachineOptions<Context, MachineEvents> = {
       authenticationAttempts = 0,
       maxAuthenticationAttempts = 3,
     }) => !!(authenticationAttempts < maxAuthenticationAttempts),
+    userIsNotAuthenticated: ({ isAuthenticated }) => {
+      console.log('userIsNotAuthenticated:', !!isAuthenticated)
+      return !isAuthenticated ? true : false
+    },
   },
 }

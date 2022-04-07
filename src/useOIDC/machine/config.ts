@@ -10,10 +10,12 @@ export const config: MachineConfig<Context, StateSchema, MachineEvents> = {
       actions: ['logger'],
       target: 'authorization',
     },
+    EMTPY_OUT_LOCAL_STORAGE: {
+      target: 'localStorage',
+    },
   },
   states: {
     authorization: {
-      entry: ['logger'],
       id: 'authorization',
       invoke: {
         src: 'checkAuthorization',
@@ -26,7 +28,6 @@ export const config: MachineConfig<Context, StateSchema, MachineEvents> = {
       },
     },
     authentication: {
-      entry: ['logger'],
       id: 'authentication',
       invoke: {
         src: 'checkAuthentication',
@@ -49,7 +50,6 @@ export const config: MachineConfig<Context, StateSchema, MachineEvents> = {
     },
     authenticated: {
       id: 'authenticated',
-      entry: ['logger'],
       on: {
         LOG_OUT: {
           actions: ['logger'],
@@ -59,25 +59,55 @@ export const config: MachineConfig<Context, StateSchema, MachineEvents> = {
     },
     logOut: {
       id: 'logOut',
-      invoke: {
-        id: 'log-out-user',
-        src: 'logOutUser',
-      },
-      on: {
-        LOG_OUT_SUCCESS: {
-          actions: ['logger', 'removeAccessToken'],
-          target: 'authorization',
+      initial: 'accessToken',
+      states: {
+        accessToken: {
+          id: 'accessToken',
+          entry: ['removeAccessToken'],
+          always: {
+            target: 'identityServer',
+            cond: 'userIsNotAuthenticated',
+          },
+        },
+        identityServer: {
+          invoke: {
+            id: 'notify-identity-server-for-logout-event',
+            src: 'notifiyIdentityServerForlogoutEvent',
+          },
+          on: {
+            SERVER_NOTIFIED: {
+              actions: ['logger', 'removeLocalStorageItems'],
+              target: '#logOutSuccess',
+            },
+          },
+        },
+        logOutSuccess: {
+          id: 'logOutSuccess',
+          invoke: {
+            id: 'remove-local-storage-items',
+            src: 'removeLocalStorageItems',
+          },
+          after: {
+            1000: {
+              target: '#authorization',
+            },
+          },
         },
       },
     },
-    logOutSuccess: {
+    localStorage: {
+      id: 'localStorage',
       entry: ['logger'],
       invoke: {
-        id: 'remove-local-storage-items',
-        src: 'removeLocalStorageItems',
+        id: 'emptyLocalStorage',
+        src: 'emptyLocalStorage',
+      },
+      after: {
+        1000: {
+          target: '#authorization',
+        },
       },
     },
-
     retry: {
       id: 'retry',
       entry: ['logger'],

@@ -38,6 +38,19 @@ export interface Logout {
 export interface Loggedout {
   type: 'LOG_OUT_SUCCESS'
 }
+
+export interface Done {
+  type: 'DONE'
+}
+
+export interface ServerNotified {
+  type: 'SERVER_NOTIFIED'
+}
+
+export interface EmptyLocalStorage {
+  type: 'EMTPY_OUT_LOCAL_STORAGE'
+}
+
 export type MachineEvents =
   | AuthorizedEvent
   | StartAuth
@@ -46,3 +59,6 @@ export type MachineEvents =
   | AuthenticatedEvent
   | Logout
   | Loggedout
+  | Done
+  | ServerNotified
+  | EmptyLocalStorage

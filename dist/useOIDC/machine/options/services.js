@@ -23,7 +23,7 @@ const noHashQueryStringUtils_1 = require("../../noHashQueryStringUtils");
 const utils_1 = require("../../utils");
 const { 
 // REACT_APP_LOGIN_URI = 'https://login.staging.pandolink.com',
-REACT_APP_AUTH_SERVER = 'https://login.staging.pandolink.com', REACT_APP_AUTH_SERVER_LOGOUT = 'https://login.staging.pandolink.com/connect/endsession', REACT_APP_REDIRECT_URI = '', REACT_APP_SCOPE = '', REACT_APP_CLIENT_SECRET = '', REACT_APP_CLIENT_ID = '', } = process.env;
+REACT_APP_AUTH_SERVER = 'https://login.staging.pandolink.com', REACT_APP_AUTH_SERVER_LOGOUT = 'https://login.staging.pandolink.com/connect/endsession', REACT_APP_REDIRECT_URI = 'http://localhost:3000', REACT_APP_SCOPE = '', REACT_APP_CLIENT_SECRET = 'wbtCpQYNhYcogScfRcZDAMzMYsfKcRzpEvB', REACT_APP_CLIENT_ID = '81CD8602-3B16-4AD6-81EC-89D6B9465F80', } = process.env;
 const authorizationHandler = new appauth_1.RedirectRequestHandler(new appauth_1.LocalStorageBackend(), new noHashQueryStringUtils_1.NoHashQueryStringUtils(), window.location, new appauth_1.DefaultCrypto());
 exports.services = {
     checkAuthorization: ({ accessToken }) => (send) => __awaiter(void 0, void 0, void 0, function* () {
@@ -80,6 +80,7 @@ exports.services = {
                 appauth_1.AuthorizationServiceConfiguration.fetchFromIssuer(REACT_APP_AUTH_SERVER, new appauth_1.FetchRequestor())
                     .then((response) => tokenHandler.performTokenRequest(response, requestToken))
                     .then((response) => {
+                    console.log('HAHAHAHA:', response);
                     const { accessToken } = response;
                     accessToken &&
                         send({
@@ -108,4 +109,36 @@ exports.services = {
             });
         }
     }),
+    notifiyIdentityServerForlogoutEvent: ({ idToken }) => (send) => __awaiter(void 0, void 0, void 0, function* () {
+        const queryParams = (0, utils_1.convertToQueryParams)({
+            id_token_hint: idToken,
+            post_logout_redirect_uri: REACT_APP_REDIRECT_URI,
+        });
+        const { data } = yield axios_1.default.get(`${REACT_APP_AUTH_SERVER_LOGOUT}${queryParams}`);
+        // window.location.href = REACT_APP_AUTH_SERVER_LOGOUT + queryParams
+        if (data) {
+            console.log('DATA DATA:', data);
+            send({
+                type: 'SERVER_NOTIFIED',
+            });
+        }
+    }),
+    removeLocalStorageItems: () => {
+        try {
+            localStorage.removeItem('oidc');
+            localStorage.clear();
+        }
+        catch (e) {
+            console.log('ERROR REMOVING LOCAL STORAGE');
+        }
+    },
+    emptyLocalStorage: () => {
+        try {
+            localStorage.removeItem('oidc');
+            localStorage.clear();
+        }
+        catch (e) {
+            console.log('ERROR EMPTYING LOCAL STORAGE');
+        }
+    },
 };

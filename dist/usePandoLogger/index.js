@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.usePandoLogger = void 0;
-const usePandoLogger = ({ name, subTitle, body }) => {
+exports.pandoLogger = void 0;
+const pandoLogger = ({ name, subTitle, body }) => {
     console.log(`%c${name}`, `font-weight: bold;
      font-size: 20px;
      color: #2C969B;
@@ -16,4 +16,4 @@ const usePandoLogger = ({ name, subTitle, body }) => {
      margin: 0 0 10px;
     `, body !== null && body !== void 0 ? body : '');
 };
-exports.usePandoLogger = usePandoLogger;
+exports.pandoLogger = pandoLogger;

@@ -6,13 +6,16 @@ export type State = StateNodeDefinition<
   AnyStateNodeDefinition,
   MachineEvents
 >
+
+export type LogoutState = State
 export interface StateSchema {
   states: {
     authorization: State
     authentication: State
     authenticated: State
-    logOutSuccess: State
-    logOut: State
+    // logOutSuccess: State
+    logOut: any
+    localStorage: State
     retry: State
   }
 }
