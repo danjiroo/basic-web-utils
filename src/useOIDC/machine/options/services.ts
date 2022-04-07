@@ -3,10 +3,10 @@
 /* eslint-disable @typescript-eslint/no-extra-semi */
 /* eslint-disable indent */
 
-import { Sender } from 'xstate'
+import { Sender } from 'xstate';
 
-import { Context, AuthorizedEvent } from '../types'
-import axios from 'axios'
+import { Context, AuthorizedEvent } from '../types';
+import axios from 'axios';
 import {
   AuthorizationServiceConfiguration,
   AuthorizationRequest,
@@ -18,10 +18,10 @@ import {
   AuthorizationNotifier,
   TokenRequest,
   GRANT_TYPE_AUTHORIZATION_CODE,
-} from '@openid/appauth'
-import { NoHashQueryStringUtils } from '../../noHashQueryStringUtils'
+} from '@openid/appauth';
+import { NoHashQueryStringUtils } from '../../noHashQueryStringUtils';
 
-import { convertToQueryParams } from '../../utils'
+import { convertToQueryParams } from '../../utils';
 
 const {
   // REACT_APP_LOGIN_URI = 'https://login.staging.pandolink.com',
@@ -31,20 +31,23 @@ const {
   REACT_APP_SCOPE = '',
   REACT_APP_CLIENT_SECRET = 'wbtCpQYNhYcogScfRcZDAMzMYsfKcRzpEvB',
   REACT_APP_CLIENT_ID = '81CD8602-3B16-4AD6-81EC-89D6B9465F80',
-} = process.env
+} = process.env;
 
-const authorizationHandler = new RedirectRequestHandler(
-  new LocalStorageBackend(),
-  new NoHashQueryStringUtils(),
-  window.location,
-  new DefaultCrypto()
-)
+const authorizationHandler =
+  typeof window !== 'undefined'
+    ? new RedirectRequestHandler(
+        new LocalStorageBackend(),
+        new NoHashQueryStringUtils(),
+        window.location,
+        new DefaultCrypto()
+      )
+    : undefined;
 export const services: any = {
   checkAuthorization:
     ({ accessToken }: Context) =>
     async (send: Sender<AuthorizedEvent>) => {
       if (!accessToken) {
-        ;(async () => {
+        (async () => {
           try {
             AuthorizationServiceConfiguration.fetchFromIssuer(
               REACT_APP_AUTH_SERVER!,
@@ -65,28 +68,30 @@ export const services: any = {
                   prompt: 'login',
                   access_type: 'offline',
                 },
-              })
+              });
 
-              authorizationHandler.performAuthorizationRequest(
-                response,
-                authRequest
-              )
-              response && send('AUTHORIZED')
-            })
+              authorizationHandler &&
+                authorizationHandler.performAuthorizationRequest(
+                  response,
+                  authRequest
+                );
+              response && send('AUTHORIZED');
+            });
           } catch (error) {
-            console.log('ERROR AUTHORIZING:', error)
+            console.log('ERROR AUTHORIZING:', error);
           }
-        })()
+        })();
       }
     },
 
   checkAuthentication: () => (send: Sender<any>) => {
-    ;(() => {
-      const tokenHandler = new BaseTokenRequestHandler(new FetchRequestor())
-      const notifier = new AuthorizationNotifier()
-      authorizationHandler.setAuthorizationNotifier(notifier)
+    (() => {
+      const tokenHandler = new BaseTokenRequestHandler(new FetchRequestor());
+      const notifier = new AuthorizationNotifier();
+      authorizationHandler &&
+        authorizationHandler.setAuthorizationNotifier(notifier);
       notifier.setAuthorizationListener((request, response, error) => {
-        if (error) console.log('SET AUTHORIZATION LISTENER ERROR', error)
+        if (error) console.log('SET AUTHORIZATION LISTENER ERROR', error);
         //  CREATE TOKEN REQUEST
         const requestToken = new TokenRequest({
           client_id: REACT_APP_CLIENT_ID,
@@ -102,7 +107,7 @@ export const services: any = {
                   scope: REACT_APP_SCOPE!,
                 }
               : {},
-        })
+        });
         AuthorizationServiceConfiguration.fetchFromIssuer(
           REACT_APP_AUTH_SERVER!,
           new FetchRequestor()
@@ -111,8 +116,8 @@ export const services: any = {
             tokenHandler.performTokenRequest(response, requestToken)
           )
           .then((response) => {
-            console.log('HAHAHAHA:', response)
-            const { accessToken } = response
+            console.log('HAHAHAHA:', response);
+            const { accessToken } = response;
             accessToken &&
               send({
                 type: 'AUTHENTICATED',
@@ -120,14 +125,15 @@ export const services: any = {
                   ...response,
                   isAuthenticated: true,
                 },
-              })
+              });
           })
           .catch((error) => {
-            send({ type: 'AUTHENTICATION_ERROR', payload: error })
-          })
-      })
-      authorizationHandler.completeAuthorizationRequestIfPossible()
-    })()
+            send({ type: 'AUTHENTICATION_ERROR', payload: error });
+          });
+      });
+      authorizationHandler &&
+        authorizationHandler.completeAuthorizationRequestIfPossible();
+    })();
   },
   logOutUser:
     ({ idToken }: Context) =>
@@ -135,16 +141,16 @@ export const services: any = {
       const queryParams = convertToQueryParams({
         id_token_hint: idToken,
         post_logout_redirect_uri: REACT_APP_REDIRECT_URI,
-      })
+      });
       const { data } = await axios.get(
         `${REACT_APP_AUTH_SERVER_LOGOUT}${queryParams}`
-      )
+      );
       // window.location.href = REACT_APP_AUTH_SERVER_LOGOUT + queryParams
       if (data) {
-        console.log('DATA DATA:', data)
+        console.log('DATA DATA:', data);
         send({
           type: 'LOG_OUT_SUCCESS',
-        })
+        });
       }
     },
   notifiyIdentityServerForlogoutEvent:
@@ -153,32 +159,32 @@ export const services: any = {
       const queryParams = convertToQueryParams({
         id_token_hint: idToken,
         post_logout_redirect_uri: REACT_APP_REDIRECT_URI,
-      })
+      });
       const { data } = await axios.get(
         `${REACT_APP_AUTH_SERVER_LOGOUT}${queryParams}`
-      )
+      );
       // window.location.href = REACT_APP_AUTH_SERVER_LOGOUT + queryParams
       if (data) {
-        console.log('DATA DATA:', data)
+        console.log('DATA DATA:', data);
         send({
           type: 'SERVER_NOTIFIED',
-        })
+        });
       }
     },
   removeLocalStorageItems: () => {
     try {
-      localStorage.removeItem('oidc')
-      localStorage.clear()
+      localStorage.removeItem('oidc');
+      localStorage.clear();
     } catch (e) {
-      console.log('ERROR REMOVING LOCAL STORAGE')
+      console.log('ERROR REMOVING LOCAL STORAGE');
     }
   },
   emptyLocalStorage: () => {
     try {
-      localStorage.removeItem('oidc')
-      localStorage.clear()
+      localStorage.removeItem('oidc');
+      localStorage.clear();
     } catch (e) {
-      console.log('ERROR EMPTYING LOCAL STORAGE')
+      console.log('ERROR EMPTYING LOCAL STORAGE');
     }
   },
-}
+};

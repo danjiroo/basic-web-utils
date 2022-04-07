@@ -24,11 +24,12 @@ const utils_1 = require("../../utils");
 const { 
 // REACT_APP_LOGIN_URI = 'https://login.staging.pandolink.com',
 REACT_APP_AUTH_SERVER = 'https://login.staging.pandolink.com', REACT_APP_AUTH_SERVER_LOGOUT = 'https://login.staging.pandolink.com/connect/endsession', REACT_APP_REDIRECT_URI = 'http://localhost:3000', REACT_APP_SCOPE = '', REACT_APP_CLIENT_SECRET = 'wbtCpQYNhYcogScfRcZDAMzMYsfKcRzpEvB', REACT_APP_CLIENT_ID = '81CD8602-3B16-4AD6-81EC-89D6B9465F80', } = process.env;
-const authorizationHandler = new appauth_1.RedirectRequestHandler(new appauth_1.LocalStorageBackend(), new noHashQueryStringUtils_1.NoHashQueryStringUtils(), window.location, new appauth_1.DefaultCrypto());
+const authorizationHandler = typeof window !== 'undefined'
+    ? new appauth_1.RedirectRequestHandler(new appauth_1.LocalStorageBackend(), new noHashQueryStringUtils_1.NoHashQueryStringUtils(), window.location, new appauth_1.DefaultCrypto())
+    : undefined;
 exports.services = {
     checkAuthorization: ({ accessToken }) => (send) => __awaiter(void 0, void 0, void 0, function* () {
         if (!accessToken) {
-            ;
             (() => __awaiter(void 0, void 0, void 0, function* () {
                 try {
                     appauth_1.AuthorizationServiceConfiguration.fetchFromIssuer(REACT_APP_AUTH_SERVER, new appauth_1.FetchRequestor()).then((response) => {
@@ -48,7 +49,8 @@ exports.services = {
                                 access_type: 'offline',
                             },
                         });
-                        authorizationHandler.performAuthorizationRequest(response, authRequest);
+                        authorizationHandler &&
+                            authorizationHandler.performAuthorizationRequest(response, authRequest);
                         response && send('AUTHORIZED');
                     });
                 }
@@ -59,11 +61,11 @@ exports.services = {
         }
     }),
     checkAuthentication: () => (send) => {
-        ;
         (() => {
             const tokenHandler = new appauth_1.BaseTokenRequestHandler(new appauth_1.FetchRequestor());
             const notifier = new appauth_1.AuthorizationNotifier();
-            authorizationHandler.setAuthorizationNotifier(notifier);
+            authorizationHandler &&
+                authorizationHandler.setAuthorizationNotifier(notifier);
             notifier.setAuthorizationListener((request, response, error) => {
                 if (error)
                     console.log('SET AUTHORIZATION LISTENER ERROR', error);
@@ -92,7 +94,8 @@ exports.services = {
                     send({ type: 'AUTHENTICATION_ERROR', payload: error });
                 });
             });
-            authorizationHandler.completeAuthorizationRequestIfPossible();
+            authorizationHandler &&
+                authorizationHandler.completeAuthorizationRequestIfPossible();
         })();
     },
     logOutUser: ({ idToken }) => (send) => __awaiter(void 0, void 0, void 0, function* () {
