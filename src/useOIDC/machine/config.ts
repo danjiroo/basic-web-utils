@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { MachineConfig } from 'xstate'
 
 import { Context, StateSchema, MachineEvents } from './types'
@@ -34,6 +35,10 @@ export const config: MachineConfig<Context, StateSchema, MachineEvents> = {
         id: 'check-authentication',
       },
       on: {
+        // @ts-ignore
+        REFRESH: {
+          actions: 'logger',
+        },
         AUTHENTICATED: {
           actions: ['logger', 'assignAuthenticationResponse'],
           target: 'authenticated',

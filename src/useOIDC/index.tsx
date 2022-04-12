@@ -3,7 +3,7 @@ import { useInterpret, useSelector } from '@xstate/react';
 import { useEffect } from 'react';
 import { config, options } from './machine';
 import { Context } from './machine';
-import { pandoLogger } from '../';
+import { pandoLogger } from '../usePandoLogger';
 const { REACT_APP_REDIRECT_URI } = process.env;
 
 const default_context: Context = {
@@ -23,7 +23,9 @@ export const spawn = <Config, Options>(config: Config, options: Options) =>
   createMachine({ ...config, context: { ...default_context } }, options);
 
 export const useOIDC = (): [Context, Sender<AnyEventObject>] => {
-  const stateDefinition = localStorage.getItem('oidc');
+  const stateDefinition =
+    typeof window !== 'undefined' ? localStorage.getItem('oidc') : undefined;
+
   const noId = `idless-machine-${new Date().toLocaleTimeString()}`;
   const recordService = useInterpret(
     spawn(config, options),
@@ -41,33 +43,41 @@ export const useOIDC = (): [Context, Sender<AnyEventObject>] => {
     },
     //ENSURES THAT LOCAL STORAGE WILL BE EMPTY AFTER LOGGING OUT
     (state) => {
-      console.log('THE CURRENT STATE IS:', state.value);
       if (state && !state.matches('logOut'))
-        localStorage.setItem('oidc', JSON.stringify(state));
+        typeof window !== 'undefined' &&
+          localStorage.setItem('oidc', JSON.stringify(state));
     }
   );
+
   const { send } = recordService;
 
   const selectedState = (state: State<Context>) => state.context;
   const compare = <T,>(prev: T, current: T) => prev === current;
   const user = useSelector(recordService, selectedState, compare);
 
-  const URL = window.location.href;
+  const URL = typeof window !== 'undefined' ? window.location.href : '';
 
   useEffect(() => {
     if (URL === `${REACT_APP_REDIRECT_URI}/` && !user.isAuthenticated) {
       send('EMTPY_OUT_LOCAL_STORAGE');
     }
-  }, [user, URL, send]);
+  }, [user]);
 
   useEffect(() => {
-    window.addEventListener('storage', (e) => {
-      if (e.key === 'oidc' && e.oldValue && !e.newValue) {
-        const res = localStorage.getItem('oidc');
-        const data = res ? JSON.parse(res) : undefined;
-        console.log('FROM LOCAL STORAGE:', data);
-      }
-    });
+    if (URL !== `${REACT_APP_REDIRECT_URI}/` && !user.isAuthenticated) {
+      send('REFRESH');
+    }
   }, [user]);
+
+  // useEffect(() => {
+  //   window.addEventListener('storage', (e) => {
+  //     if (e.key === 'oidc' && e.oldValue && !e.newValue) {
+  //       const res = localStorage.getItem('oidc')
+  //       const data = res ? JSON.parse(res) : undefined
+  //       console.log('FROM LOCAL STORAGE:', data)
+  //     }
+  //   })
+  // }, [user])
+
   return [user, send];
 };
