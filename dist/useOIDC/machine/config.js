@@ -33,6 +33,10 @@ exports.config = {
                 id: 'check-authentication',
             },
             on: {
+                // @ts-ignore
+                REFRESH: {
+                    actions: 'logger',
+                },
                 AUTHENTICATED: {
                     actions: ['logger', 'assignAuthenticationResponse'],
                     target: 'authenticated',
