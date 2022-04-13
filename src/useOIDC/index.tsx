@@ -1,10 +1,10 @@
-import { createMachine, State, AnyEventObject, Sender } from 'xstate'
-import { useInterpret, useSelector } from '@xstate/react'
-import { useEffect } from 'react'
-import { config, options } from './machine'
-import { Context } from './machine'
-import { usePandoLogger } from '../'
-const { REACT_APP_REDIRECT_URI } = process.env
+import { createMachine, State, AnyEventObject, Sender } from 'xstate';
+import { useInterpret, useSelector } from '@xstate/react';
+import { useEffect } from 'react';
+import { config, options } from './machine';
+import { Context } from './machine';
+import { pandoLogger } from '../';
+const { REACT_APP_REDIRECT_URI } = process.env;
 
 const default_context: Context = {
   accessToken: null,
@@ -17,16 +17,16 @@ const default_context: Context = {
   isAuthenticated: false,
   authenticationAttempts: 0,
   maxAuthenticationAttempts: 3,
-}
+};
 
 export const spawn = <Config, Options>(config: Config, options: Options) =>
-  createMachine({ ...config, context: { ...default_context } }, options)
+  createMachine({ ...config, context: { ...default_context } }, options);
 
 export const useOIDC = (): [Context, Sender<AnyEventObject>] => {
   const stateDefinition =
-    typeof window !== 'undefined' ? localStorage.getItem('oidc') : undefined
+    typeof window !== 'undefined' ? localStorage.getItem('oidc') : undefined;
 
-  const noId = `idless-machine-${new Date().toLocaleTimeString()}`
+  const noId = `idless-machine-${new Date().toLocaleTimeString()}`;
   const recordService = useInterpret(
     spawn(config, options),
     {
@@ -34,7 +34,7 @@ export const useOIDC = (): [Context, Sender<AnyEventObject>] => {
       actions: {
         ...options.actions,
         logger: (context, event, { state }) =>
-          usePandoLogger({
+          pandoLogger({
             name: (config?.id ?? noId).toUpperCase(),
             subTitle: event.type,
             body: { context, event, currentState: state.value },
@@ -45,29 +45,29 @@ export const useOIDC = (): [Context, Sender<AnyEventObject>] => {
     (state) => {
       if (state && !state.matches('logOut'))
         typeof window !== 'undefined' &&
-          localStorage.setItem('oidc', JSON.stringify(state))
+          localStorage.setItem('oidc', JSON.stringify(state));
     }
-  )
+  );
 
-  const { send } = recordService
+  const { send } = recordService;
 
-  const selectedState = (state: State<Context>) => state.context
-  const compare = <T,>(prev: T, current: T) => prev === current
-  const user = useSelector(recordService, selectedState, compare)
+  const selectedState = (state: State<Context>) => state.context;
+  const compare = <T,>(prev: T, current: T) => prev === current;
+  const user = useSelector(recordService, selectedState, compare);
 
-  const URL = typeof window !== 'undefined' ? window.location.href : ''
+  const URL = typeof window !== 'undefined' ? window.location.href : '';
 
   useEffect(() => {
     if (URL === `${REACT_APP_REDIRECT_URI}/` && !user.isAuthenticated) {
-      send('EMTPY_OUT_LOCAL_STORAGE')
+      send('EMTPY_OUT_LOCAL_STORAGE');
     }
-  }, [user])
+  }, [user]);
 
   useEffect(() => {
     if (URL !== `${REACT_APP_REDIRECT_URI}/` && !user.isAuthenticated) {
-      send('REFRESH')
+      send('REFRESH');
     }
-  }, [user])
+  }, [user]);
 
-  return [user, send]
-}
+  return [user, send];
+};
