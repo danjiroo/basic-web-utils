@@ -55,9 +55,7 @@ const axios_1 = __importDefault(require("axios"));
 // } from '@openid/appauth'
 const noHashQueryStringUtils_1 = require("../../noHashQueryStringUtils");
 const utils_1 = require("../../utils");
-const { 
-// REACT_APP_LOGIN_URI = 'https://login.staging.pandolink.com',
-REACT_APP_AUTH_SERVER = 'https://login.staging.pandolink.com', REACT_APP_AUTH_SERVER_LOGOUT = 'https://login.staging.pandolink.com/connect/endsession', REACT_APP_REDIRECT_URI = 'http://localhost:3000', REACT_APP_SCOPE = '', REACT_APP_CLIENT_SECRET = 'wbtCpQYNhYcogScfRcZDAMzMYsfKcRzpEvB', REACT_APP_CLIENT_ID = '81CD8602-3B16-4AD6-81EC-89D6B9465F80', } = process.env;
+const { REACT_APP_AUTH_SERVER, REACT_APP_AUTH_SERVER_LOGOUT, REACT_APP_REDIRECT_URI, REACT_APP_SCOPE, REACT_APP_CLIENT_SECRET = '', REACT_APP_CLIENT_ID = '', } = process.env;
 exports.services = {
     checkAuthorization: ({ accessToken }) => (send) => __awaiter(void 0, void 0, void 0, function* () {
         const { AuthorizationServiceConfiguration, AuthorizationRequest, LocalStorageBackend, FetchRequestor, DefaultCrypto, RedirectRequestHandler, } = typeof window !== 'undefined'
@@ -65,7 +63,6 @@ exports.services = {
             : {};
         const authorizationHandler = new RedirectRequestHandler(new LocalStorageBackend(), new noHashQueryStringUtils_1.NoHashQueryStringUtils(), window.location, new DefaultCrypto());
         if (!accessToken) {
-            ;
             (() => __awaiter(void 0, void 0, void 0, function* () {
                 try {
                     AuthorizationServiceConfiguration.fetchFromIssuer(REACT_APP_AUTH_SERVER, new FetchRequestor()).then((response) => {
@@ -90,13 +87,12 @@ exports.services = {
                     });
                 }
                 catch (error) {
-                    console.log('ERROR AUTHORIZING:', error);
+                    console.error('ERROR AUTHORIZING:', error);
                 }
             }))();
         }
     }),
     checkAuthentication: () => (send) => {
-        ;
         (() => __awaiter(void 0, void 0, void 0, function* () {
             const { AuthorizationServiceConfiguration, LocalStorageBackend, FetchRequestor, DefaultCrypto, RedirectRequestHandler, BaseTokenRequestHandler, AuthorizationNotifier, TokenRequest, GRANT_TYPE_AUTHORIZATION_CODE, } = typeof window !== 'undefined'
                 ? yield Promise.resolve().then(() => __importStar(require('@openid/appauth')))
@@ -107,7 +103,7 @@ exports.services = {
             authorizationHandler.setAuthorizationNotifier(notifier);
             notifier.setAuthorizationListener((request, response, error) => {
                 if (error)
-                    console.log('SET AUTHORIZATION LISTENER ERROR', error);
+                    console.error('SET AUTHORIZATION LISTENER ERROR', error);
                 //  CREATE TOKEN REQUEST
                 const requestToken = new TokenRequest({
                     client_id: REACT_APP_CLIENT_ID,
@@ -143,7 +139,6 @@ exports.services = {
         const { data } = yield axios_1.default.get(`${REACT_APP_AUTH_SERVER_LOGOUT}${queryParams}`);
         // window.location.href = REACT_APP_AUTH_SERVER_LOGOUT + queryParams
         if (data) {
-            console.log('DATA DATA:', data);
             send({
                 type: 'LOG_OUT_SUCCESS',
             });
@@ -157,7 +152,6 @@ exports.services = {
         const { data } = yield axios_1.default.get(`${REACT_APP_AUTH_SERVER_LOGOUT}${queryParams}`);
         // window.location.href = REACT_APP_AUTH_SERVER_LOGOUT + queryParams
         if (data) {
-            console.log('DATA DATA:', data);
             send({
                 type: 'SERVER_NOTIFIED',
             });
@@ -169,7 +163,7 @@ exports.services = {
             localStorage.clear();
         }
         catch (e) {
-            console.log('ERROR REMOVING LOCAL STORAGE');
+            console.error('ERROR REMOVING LOCAL STORAGE');
         }
     },
     emptyLocalStorage: () => {
@@ -178,7 +172,7 @@ exports.services = {
             localStorage.clear();
         }
         catch (e) {
-            console.log('ERROR EMPTYING LOCAL STORAGE');
+            console.error('ERROR EMPTYING LOCAL STORAGE');
         }
     },
 };

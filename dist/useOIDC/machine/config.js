@@ -6,7 +6,6 @@ exports.config = {
     initial: 'authorization',
     on: {
         START_AUTH: {
-            actions: ['logger'],
             target: 'authorization',
         },
         EMTPY_OUT_LOCAL_STORAGE: {
@@ -34,11 +33,9 @@ exports.config = {
             },
             on: {
                 // @ts-ignore
-                REFRESH: {
-                    actions: 'logger',
-                },
+                REFRESH: {},
                 AUTHENTICATED: {
-                    actions: ['logger', 'assignAuthenticationResponse'],
+                    actions: ['assignAuthenticationResponse'],
                     target: 'authenticated',
                 },
                 AUTHENTICATION_ERROR: {
@@ -55,7 +52,6 @@ exports.config = {
             id: 'authenticated',
             on: {
                 LOG_OUT: {
-                    actions: ['logger'],
                     target: 'logOut',
                 },
             },
@@ -79,7 +75,7 @@ exports.config = {
                     },
                     on: {
                         SERVER_NOTIFIED: {
-                            actions: ['logger', 'removeLocalStorageItems'],
+                            actions: ['removeLocalStorageItems'],
                             target: '#logOutSuccess',
                         },
                     },
@@ -100,7 +96,6 @@ exports.config = {
         },
         localStorage: {
             id: 'localStorage',
-            entry: ['logger'],
             invoke: {
                 id: 'emptyLocalStorage',
                 src: 'emptyLocalStorage',
@@ -113,7 +108,6 @@ exports.config = {
         },
         retry: {
             id: 'retry',
-            entry: ['logger'],
             after: {
                 1000: {
                     target: 'authentication',

@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-empty */
 import { createMachine, State, AnyEventObject, Sender } from 'xstate';
 import { useInterpret, useSelector } from '@xstate/react';
 import { useEffect } from 'react';
 import { config, options } from './machine';
 import { Context } from './machine';
-import { pandoLogger } from '../';
+import { pandoLogger } from '../usePandoLogger';
 const { REACT_APP_REDIRECT_URI } = process.env;
 
 const default_context: Context = {
@@ -68,6 +70,15 @@ export const useOIDC = (): [Context, Sender<AnyEventObject>] => {
       send('REFRESH');
     }
   }, [user]);
+
+  // useEffect(() => {
+  //   window.addEventListener('storage', (e) => {
+  //     if (e.key === 'oidc' && e.oldValue && !e.newValue) {
+  //       const res = localStorage.getItem('oidc')
+  //       const data = res ? JSON.parse(res) : undefined
+  //     }
+  //   })
+  // }, [user])
 
   return [user, send];
 };

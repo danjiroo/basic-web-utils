@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { AnyStateNodeDefinition, StateNodeDefinition } from 'xstate'
 import { Context, MachineEvents } from '..'
 

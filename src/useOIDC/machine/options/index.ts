@@ -1,3 +1,4 @@
+/* eslint-disable arrow-body-style */
 import { MachineOptions } from 'xstate'
 
 import { Context, MachineEvents } from '../types'
@@ -14,7 +15,6 @@ export const options: MachineOptions<Context, MachineEvents> = {
       maxAuthenticationAttempts = 3,
     }) => !!(authenticationAttempts < maxAuthenticationAttempts),
     userIsNotAuthenticated: ({ isAuthenticated }) => {
-      console.log('userIsNotAuthenticated:', !!isAuthenticated)
       return !isAuthenticated ? true : false
     },
   },

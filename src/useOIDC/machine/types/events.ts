@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface CheckAuthSuccess {
   type: 'CHECK_AUTH_SUCCESS'
   payload: {

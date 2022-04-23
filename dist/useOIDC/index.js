@@ -1,11 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.useOIDC = exports.spawn = void 0;
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-empty */
 const xstate_1 = require("xstate");
 const react_1 = require("@xstate/react");
 const react_2 = require("react");
 const machine_1 = require("./machine");
-const __1 = require("../");
+const usePandoLogger_1 = require("../usePandoLogger");
 const { REACT_APP_REDIRECT_URI } = process.env;
 const default_context = {
     accessToken: null,
@@ -28,7 +30,7 @@ const useOIDC = () => {
         state: stateDefinition ? JSON.parse(stateDefinition) : undefined,
         actions: Object.assign(Object.assign({}, machine_1.options.actions), { logger: (context, event, { state }) => {
                 var _a;
-                return (0, __1.pandoLogger)({
+                return (0, usePandoLogger_1.pandoLogger)({
                     name: ((_a = machine_1.config === null || machine_1.config === void 0 ? void 0 : machine_1.config.id) !== null && _a !== void 0 ? _a : noId).toUpperCase(),
                     subTitle: event.type,
                     body: { context, event, currentState: state.value },
@@ -56,6 +58,14 @@ const useOIDC = () => {
             send('REFRESH');
         }
     }, [user]);
+    // useEffect(() => {
+    //   window.addEventListener('storage', (e) => {
+    //     if (e.key === 'oidc' && e.oldValue && !e.newValue) {
+    //       const res = localStorage.getItem('oidc')
+    //       const data = res ? JSON.parse(res) : undefined
+    //     }
+    //   })
+    // }, [user])
     return [user, send];
 };
 exports.useOIDC = useOIDC;

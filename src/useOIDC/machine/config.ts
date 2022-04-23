@@ -8,7 +8,6 @@ export const config: MachineConfig<Context, StateSchema, MachineEvents> = {
   initial: 'authorization',
   on: {
     START_AUTH: {
-      actions: ['logger'],
       target: 'authorization',
     },
     EMTPY_OUT_LOCAL_STORAGE: {
@@ -36,11 +35,9 @@ export const config: MachineConfig<Context, StateSchema, MachineEvents> = {
       },
       on: {
         // @ts-ignore
-        REFRESH: {
-          actions: 'logger',
-        },
+        REFRESH: {},
         AUTHENTICATED: {
-          actions: ['logger', 'assignAuthenticationResponse'],
+          actions: ['assignAuthenticationResponse'],
           target: 'authenticated',
         },
         AUTHENTICATION_ERROR: {
@@ -57,7 +54,6 @@ export const config: MachineConfig<Context, StateSchema, MachineEvents> = {
       id: 'authenticated',
       on: {
         LOG_OUT: {
-          actions: ['logger'],
           target: 'logOut',
         },
       },
@@ -81,7 +77,7 @@ export const config: MachineConfig<Context, StateSchema, MachineEvents> = {
           },
           on: {
             SERVER_NOTIFIED: {
-              actions: ['logger', 'removeLocalStorageItems'],
+              actions: ['removeLocalStorageItems'],
               target: '#logOutSuccess',
             },
           },
@@ -102,7 +98,6 @@ export const config: MachineConfig<Context, StateSchema, MachineEvents> = {
     },
     localStorage: {
       id: 'localStorage',
-      entry: ['logger'],
       invoke: {
         id: 'emptyLocalStorage',
         src: 'emptyLocalStorage',
@@ -115,7 +110,6 @@ export const config: MachineConfig<Context, StateSchema, MachineEvents> = {
     },
     retry: {
       id: 'retry',
-      entry: ['logger'],
       after: {
         1000: {
           target: 'authentication',
