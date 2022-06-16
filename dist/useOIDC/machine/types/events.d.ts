@@ -1,3 +1,4 @@
+import { TokenResponse } from '@openid/appauth';
 export interface CheckAuthSuccess {
     type: 'CHECK_AUTH_SUCCESS';
     payload: {
@@ -7,6 +8,10 @@ export interface CheckAuthSuccess {
 }
 export interface AuthenticatedEvent {
     type: 'AUTHENTICATED';
+}
+export interface GotNewAccessTokenEvent {
+    type: 'GOT_NEW_ACCESS_TOKEN';
+    payload: TokenResponse;
 }
 export interface CheckAuthSuccess {
     type: 'CHECK_AUTH_SUCCESS';
@@ -40,4 +45,28 @@ export interface ServerNotified {
 export interface EmptyLocalStorage {
     type: 'EMTPY_OUT_LOCAL_STORAGE';
 }
-export declare type MachineEvents = AuthorizedEvent | StartAuth | AuthenticationError | CheckAuthSuccess | AuthenticatedEvent | Logout | Loggedout | Done | ServerNotified | EmptyLocalStorage;
+export interface InitializeAuth {
+    type: 'INITIALIZE_AUTH';
+}
+export interface LoginUser {
+    type: 'LOGIN_USER';
+}
+export interface KeepMeSignedInEvent {
+    type: 'KEEP_ME_SIGNED_IN';
+}
+export interface TokenExpiredEvent {
+    type: 'TOKEN_EXPIRED';
+}
+export interface ClaimResourceSuccess {
+    type: 'CLAIM_RESOURCE_SUCCESS';
+}
+export interface ClaimResourceError {
+    type: 'CLAIM_RESOURCE_ERROR';
+}
+export interface GotNewParams {
+    type: 'GOT_NEW_PARAMS';
+}
+export interface StartMachine {
+    type: 'START_MACHINE';
+}
+export declare type MachineEvents = AuthorizedEvent | StartAuth | AuthenticationError | CheckAuthSuccess | AuthenticatedEvent | Logout | Loggedout | Done | ServerNotified | EmptyLocalStorage | InitializeAuth | LoginUser | GotNewAccessTokenEvent | KeepMeSignedInEvent | TokenExpiredEvent | ClaimResourceSuccess | ClaimResourceError | GotNewParams | StartMachine;

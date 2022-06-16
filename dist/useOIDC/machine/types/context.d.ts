@@ -9,4 +9,17 @@ export interface Context {
     isAuthenticated?: boolean;
     authenticationAttempts?: number;
     maxAuthenticationAttempts?: 3;
+    waitForUserAction?: boolean;
+    instanceGuid?: string;
+    signatoryGuid?: string;
+    claimCode?: string;
+    anonymousLogin?: boolean;
+    loggedInAsGuest?: boolean;
+}
+export interface ConfigParams {
+    waitForUserAction?: boolean;
+    instanceGuid?: string;
+    signatoryGuid?: string;
+    claimCode?: string;
+    anonymousLogin?: boolean;
 }

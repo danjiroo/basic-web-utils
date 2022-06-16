@@ -2,116 +2,261 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.config = void 0;
 exports.config = {
-    id: 'oidc',
-    initial: 'authorization',
+    id: "oidc",
+    initial: "check_url_parameters",
     on: {
-        START_AUTH: {
-            target: 'authorization',
-        },
         EMTPY_OUT_LOCAL_STORAGE: {
-            target: 'localStorage',
+            target: "localStorage",
+        },
+        TOKEN_EXPIRED: {
+            target: "#token_expired",
+        },
+        GOT_NEW_PARAMS: {
+            cond: "unauthenticated",
+            actions: ["updateUrlParams"],
         },
     },
     states: {
+        check_url_parameters: {
+            id: "check_url_parameters",
+            on: {
+                START_MACHINE: [
+                    {
+                        cond: "hasParamater",
+                        target: "check_guid_resource",
+                    },
+                    {
+                        target: "landing_page",
+                    },
+                ],
+            },
+        },
+        check_guid_resource: {
+            id: "check_guid_resource",
+            always: [
+                {
+                    cond: "isInstanceGuid",
+                    target: "check_claim_code",
+                },
+                {
+                    cond: "isSignatoryGuid",
+                    target: "check_claim_code",
+                },
+                {
+                    target: "authorization",
+                },
+            ],
+        },
+        check_claim_code: {
+            always: [
+                {
+                    cond: "hasClaimCode",
+                    target: "check_allow_anonymous_flag",
+                },
+                {
+                    target: "authorization",
+                },
+            ],
+        },
+        check_allow_anonymous_flag: {
+            always: [
+                {
+                    cond: "anonymousLoginEnabled",
+                    target: "landing_page",
+                },
+                {
+                    target: "authorization",
+                },
+            ],
+        },
+        landing_page: {
+            id: "landing_page",
+            always: [
+                {
+                    cond: "shouldWaitForUserAction",
+                    target: "wait_for_user_interaction",
+                },
+                {
+                    target: "authorization",
+                },
+            ],
+        },
+        wait_for_user_interaction: {
+            on: {
+                LOGIN_USER: {
+                    target: "authorization",
+                },
+                // @ts-ignore
+                LOGIN_AS_GUEST: {
+                    actions: ["assignLoggedInAsGuest"],
+                    // temporary for now, since no anonymous login
+                    // credentials given yet
+                    target: "authorization",
+                },
+                GOT_NEW_PARAMS: [
+                    {
+                        cond: "hasParamaterViaEvent",
+                        target: "check_guid_resource",
+                        actions: ["updateUrlParams"],
+                    },
+                    {
+                        target: "landing_page",
+                        actions: ["updateUrlParams"],
+                    },
+                ],
+            },
+        },
         authorization: {
-            id: 'authorization',
+            id: "authorization",
             invoke: {
-                src: 'checkAuthorization',
-                id: 'check-authorization',
+                src: "checkAuthorization",
+                id: "check-authorization",
             },
             on: {
                 AUTHORIZED: {
-                    target: 'authentication',
+                    target: "authentication",
                 },
             },
         },
         authentication: {
-            id: 'authentication',
+            id: "authentication",
             invoke: {
-                src: 'checkAuthentication',
-                id: 'check-authentication',
+                src: "checkAuthentication",
+                id: "check-authentication",
             },
             on: {
+                GOT_NEW_PARAMS: [
+                    {
+                        cond: "hasParamaterViaEvent",
+                        target: "check_guid_resource",
+                        actions: ["updateUrlParams"],
+                    },
+                    {
+                        target: "landing_page",
+                        actions: ["updateUrlParams"],
+                    },
+                ],
                 // @ts-ignore
-                REFRESH: {},
-                AUTHENTICATED: {
-                    actions: ['assignAuthenticationResponse'],
-                    target: 'authenticated',
+                RESTART: {
+                    target: "#check_url_parameters",
                 },
+                AUTHENTICATED: [
+                    // {
+                    //   cond: "hasParamaterAndHasClaimCode",
+                    //   actions: ["assignAuthenticationResponse"],
+                    //   target: "claim_resource",
+                    // },
+                    {
+                        actions: ["assignAuthenticationResponse"],
+                        target: "authenticated",
+                    },
+                ],
                 AUTHENTICATION_ERROR: {
-                    actions: ['incrementAuthenticationAttempts'],
-                    target: 'retry',
-                },
-                CHECK_AUTH_SUCCESS: {
-                    actions: ['assignAuthResult'],
-                    target: 'authenticated',
+                    actions: ["incrementAuthenticationAttempts"],
+                    target: "retry",
                 },
             },
         },
         authenticated: {
-            id: 'authenticated',
+            id: "authenticated",
             on: {
                 LOG_OUT: {
-                    target: 'logOut',
+                    target: "logOut",
+                },
+            },
+            after: {
+                TOKEN_EXPIRES: {
+                    actions: ["logTokenExpired"],
+                    target: "#token_expired",
+                },
+            },
+        },
+        token_expired: {
+            id: "token_expired",
+            on: {
+                KEEP_ME_SIGNED_IN: {
+                    target: "#refresh_token",
+                },
+                LOG_OUT: {
+                    target: "logOut",
+                },
+            },
+        },
+        refresh_token: {
+            id: "refresh_token",
+            invoke: {
+                id: "refresh-token",
+                src: "refreshToken",
+            },
+            on: {
+                GOT_NEW_ACCESS_TOKEN: {
+                    actions: ["assignAuthenticationResponse"],
+                    target: "#authenticated",
+                },
+                KEEP_ME_SIGNED_IN: {
+                    target: "#refresh_token",
+                },
+                LOG_OUT: {
+                    target: "logOut",
                 },
             },
         },
         logOut: {
-            id: 'logOut',
-            initial: 'accessToken',
+            id: "logOut",
+            initial: "accessToken",
             states: {
                 accessToken: {
-                    id: 'accessToken',
-                    entry: ['removeAccessToken'],
+                    id: "accessToken",
+                    entry: ["removeAccessToken"],
                     always: {
-                        target: 'identityServer',
-                        cond: 'userIsNotAuthenticated',
+                        target: "identityServer",
+                        cond: "userIsNotAuthenticated",
                     },
                 },
                 identityServer: {
                     invoke: {
-                        id: 'notify-identity-server-for-logout-event',
-                        src: 'notifiyIdentityServerForlogoutEvent',
+                        id: "notify-identity-server-for-logout-event",
+                        src: "notifiyIdentityServerForlogoutEvent",
                     },
                     on: {
                         SERVER_NOTIFIED: {
-                            actions: ['removeLocalStorageItems'],
-                            target: '#logOutSuccess',
+                            target: "#logOutSuccess",
                         },
                     },
                 },
                 logOutSuccess: {
-                    id: 'logOutSuccess',
+                    id: "logOutSuccess",
                     invoke: {
-                        id: 'remove-local-storage-items',
-                        src: 'removeLocalStorageItems',
+                        id: "remove-local-storage-items",
+                        src: "removeLocalStorageItems",
                     },
                     after: {
                         1000: {
-                            target: '#authorization',
+                            actions: ["clearUrlParams"],
+                            target: "#landing_page",
                         },
                     },
                 },
             },
         },
         localStorage: {
-            id: 'localStorage',
+            id: "localStorage",
             invoke: {
-                id: 'emptyLocalStorage',
-                src: 'emptyLocalStorage',
+                id: "emptyLocalStorage",
+                src: "emptyLocalStorage",
             },
             after: {
                 1000: {
-                    target: '#authorization',
+                    target: "#authorization",
                 },
             },
         },
         retry: {
-            id: 'retry',
+            id: "retry",
             after: {
                 1000: {
-                    target: 'authentication',
-                    cond: 'hasReachMaxAuthenticationAttempts',
+                    target: "authentication",
+                    cond: "hasReachMaxAuthenticationAttempts",
                 },
             },
         },

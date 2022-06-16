@@ -19,4 +19,25 @@ export const actions: ActionFunctionMap<Context, MachineEvents> = {
     isAuthenticated: false,
     accessToken: null,
   })),
+
+  updateUrlParams: assign((context, { payload }: any) => ({
+    ...context,
+    ...payload,
+  })),
+
+  clearUrlParams: assign((context) => ({
+    ...context,
+    instanceGuid: '',
+    signatoryGuid: '',
+    claimCode: '',
+    anonymousLogin: false,
+    loggedInAsGuest: false,
+  })),
+
+  assignLoggedInAsGuest: assign((context) => ({
+    ...context,
+    loggedInAsGuest: true,
+  })),
+
+  logTokenExpired: () => console.log('Token expired.'),
 }
