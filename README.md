@@ -104,7 +104,7 @@ The **useEffect** above is required because after getting the access token, a co
 | **claimCode**  | *optional* | string  | A claimCode from the url parameters, this is only used in survey and esign executions.  |
 | **anonymousLogin**  | *optional* | boolean  | An anonymousLogin from the url parameters. (Partially implemented)  |
 
-<h3><a href="https://lucid.app/documents/embeddedchart/46fb8887-3f64-4701-a6e6-b6d61321276e" target="_blank">View flow diagram here</a>
+### <a href="https://lucid.app/documents/embeddedchart/46fb8887-3f64-4701-a6e6-b6d61321276e" target="_blank">View flow diagram here</a>
 
 useOIDC performs authorization, authentication and request an access token for your react application.
 
