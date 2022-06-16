@@ -41,7 +41,7 @@ const App: React.FC = () => {
 
     if (!state) return null
 
-    const { isAuthenticated } = bootloaderState ?? {}
+    const { isAuthenticated } = state?.context ?? {}
 
     useEffect(() => {
         if (isAuthenticated && location?.search.includes('code')) {
@@ -49,7 +49,7 @@ const App: React.FC = () => {
         }
     }, [isAuthenticated])
 
-    const showLandingPage = bootloaderState.matches?.('wait_for_user_interaction')
+    const showLandingPage = state.matches?.('wait_for_user_interaction')
 
     return (
        <SWitch>
