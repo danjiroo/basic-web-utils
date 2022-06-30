@@ -26,7 +26,8 @@ exports.config = {
                         target: "check_guid_resource",
                     },
                     {
-                        target: "landing_page",
+                        // target: "landing_page",
+                        target: "authorization",
                     },
                 ],
             },

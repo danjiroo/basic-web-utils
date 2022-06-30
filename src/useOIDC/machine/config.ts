@@ -29,7 +29,8 @@ export const config: MachineConfig<Context, StateSchema, MachineEvents> = {
             target: "check_guid_resource",
           },
           {
-            target: "landing_page",
+            // target: "landing_page",
+            target: "authorization",
           },
         ],
       },
