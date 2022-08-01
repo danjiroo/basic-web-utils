@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-empty */
 import { useEffect, useState } from "react";
@@ -5,7 +6,7 @@ import { useHistory, useLocation } from "react-router-dom";
 import { createMachine, State } from "xstate";
 import { useInterpret, useSelector } from "@xstate/react";
 
-import { pandoLogger } from "../";
+import { usePandoLogger } from "../";
 
 import { config, options, Context, ConfigParams } from "./machine";
 import { ExposedActions } from "./types";
@@ -58,7 +59,7 @@ export const useOIDC = (
       actions: {
         ...options.actions,
         logger: (context, event, { state }) =>
-          pandoLogger({
+          usePandoLogger({
             name: (config?.id ?? noId).toUpperCase(),
             subTitle: event.type,
             body: { context, event, currentState: state.value },
@@ -94,7 +95,7 @@ export const useOIDC = (
   const instanceGuid = new URLSearchParams(search)?.get("instance_guid");
   const signatoryGuid = new URLSearchParams(search)?.get("signatory_guid");
   const claimCode = new URLSearchParams(search)?.get("claim_code");
-  const anonymousLogin = new URLSearchParams(search)?.get("anonymous_login");
+  const anonymousLogin = new URLSearchParams(search)?.get("allow_anonymous");
   const urlParams = [instanceGuid, signatoryGuid, claimCode, anonymousLogin];
 
   let anonLogin = false;
@@ -102,7 +103,7 @@ export const useOIDC = (
   try {
     anonLogin = JSON.parse(anonymousLogin ?? "false");
   } catch (error) {
-    console.error("Error: url param anonymous_login invalid");
+    console.error("Error: url param allow_anonymous invalid");
   }
 
   // useEffect(() => {

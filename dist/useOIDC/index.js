@@ -15,6 +15,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.useOIDC = exports.spawn = void 0;
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-empty */
 const react_1 = require("react");
@@ -54,7 +55,7 @@ const useOIDC = (params) => {
                 : false }),
         actions: Object.assign(Object.assign({}, machine_1.options.actions), { logger: (context, event, { state }) => {
                 var _a;
-                return (0, __1.pandoLogger)({
+                return (0, __1.usePandoLogger)({
                     name: ((_a = machine_1.config === null || machine_1.config === void 0 ? void 0 : machine_1.config.id) !== null && _a !== void 0 ? _a : noId).toUpperCase(),
                     subTitle: event.type,
                     body: { context, event, currentState: state.value },
@@ -84,14 +85,14 @@ const useOIDC = (params) => {
     const instanceGuid = (_b = new URLSearchParams(search)) === null || _b === void 0 ? void 0 : _b.get("instance_guid");
     const signatoryGuid = (_c = new URLSearchParams(search)) === null || _c === void 0 ? void 0 : _c.get("signatory_guid");
     const claimCode = (_d = new URLSearchParams(search)) === null || _d === void 0 ? void 0 : _d.get("claim_code");
-    const anonymousLogin = (_e = new URLSearchParams(search)) === null || _e === void 0 ? void 0 : _e.get("anonymous_login");
+    const anonymousLogin = (_e = new URLSearchParams(search)) === null || _e === void 0 ? void 0 : _e.get("allow_anonymous");
     const urlParams = [instanceGuid, signatoryGuid, claimCode, anonymousLogin];
     let anonLogin = false;
     try {
         anonLogin = JSON.parse(anonymousLogin !== null && anonymousLogin !== void 0 ? anonymousLogin : "false");
     }
     catch (error) {
-        console.error("Error: url param anonymous_login invalid");
+        console.error("Error: url param allow_anonymous invalid");
     }
     // useEffect(() => {
     //   if (

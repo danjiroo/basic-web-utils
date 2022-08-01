@@ -14,7 +14,7 @@ import {
   TokenRequest,
 } from "@openid/appauth";
 
-import { pandoLogger } from "../../../";
+import { usePandoLogger } from "../../../";
 
 import { Context, AuthorizedEvent } from "../types";
 import { NoHashQueryString, convertToQueryParams } from "../../utils/index";
@@ -204,7 +204,7 @@ export const services: any = {
           });
         }
       } catch (error: any) {
-        pandoLogger({
+        usePandoLogger({
           name: "refreshToken: error",
           color: "danger",
           body: error?.message,

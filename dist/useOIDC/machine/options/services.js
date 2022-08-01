@@ -141,7 +141,7 @@ exports.services = {
             }
         }
         catch (error) {
-            (0, __1.pandoLogger)({
+            (0, __1.usePandoLogger)({
                 name: "refreshToken: error",
                 color: "danger",
                 body: error === null || error === void 0 ? void 0 : error.message,
