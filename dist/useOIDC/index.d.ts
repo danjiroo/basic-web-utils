@@ -12,6 +12,7 @@ export declare const spawn: <Config, Options>(config: Config, options: Options) 
     scope?: string | null | undefined;
     tokenType?: string | null | undefined;
     isAuthenticated?: boolean | undefined;
+    isAuthorized?: boolean | undefined;
     authenticationAttempts?: number | undefined;
     maxAuthenticationAttempts?: 3 | undefined;
     waitForUserAction?: boolean | undefined;
@@ -31,6 +32,7 @@ export declare const spawn: <Config, Options>(config: Config, options: Options) 
         scope?: string | null | undefined;
         tokenType?: string | null | undefined;
         isAuthenticated?: boolean | undefined;
+        isAuthorized?: boolean | undefined;
         authenticationAttempts?: number | undefined;
         maxAuthenticationAttempts?: 3 | undefined;
         waitForUserAction?: boolean | undefined;

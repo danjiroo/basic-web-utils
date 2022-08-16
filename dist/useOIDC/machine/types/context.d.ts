@@ -7,6 +7,7 @@ export interface Context {
     scope?: string | null;
     tokenType?: string | null;
     isAuthenticated?: boolean;
+    isAuthorized?: boolean;
     authenticationAttempts?: number;
     maxAuthenticationAttempts?: 3;
     waitForUserAction?: boolean;

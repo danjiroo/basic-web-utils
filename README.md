@@ -17,12 +17,12 @@ npm install @pandolink/utils
 ## Update Environment Variables
 
 ```javascript
-    REACT_APP_AUTH_SERVER = 'https://login.staging.yourcompany.com',
-    REACT_APP_REDIRECT_URI = 'https://yourcompany.com/sample',
-    REACT_APP_LOGOUT_ENDPOINT = '/connect/endsession',
-    REACT_APP_SCOPE = 'Add_Identity_Server_Scopes_Here',
-    REACT_APP_ADMIN_CLIENT_SECRET = 'Add_Client_Secret_Here',
-    REACT_APP_ADMIN_CLIENT_ID = 'Add_Client_ID_Here',
+    REACT_APP_AUTH_SERVER = 'https://login.staging.yourcompany.com'
+    REACT_APP_REDIRECT_URI = 'https://yourcompany.com/sample'
+    REACT_APP_LOGOUT_ENDPOINT = '/connect/endsession'
+    REACT_APP_SCOPE = 'Add_Identity_Server_Scopes_Here'
+    REACT_APP_ADMIN_CLIENT_SECRET = 'Add_Client_Secret_Here'
+    REACT_APP_ADMIN_CLIENT_ID = 'Add_Client_ID_Here'
 ```
 
 ## How to use the hook?

@@ -1,13 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ActionFunctionMap, assign } from 'xstate'
+import { ActionFunctionMap, assign } from "xstate";
 
-import { Context, MachineEvents } from '../types'
+import { Context, MachineEvents } from "../types";
+
+const { REACT_APP_ACCESS_TOKEN_FOR_DEBUGGING = "" } = process.env;
 
 export const actions: ActionFunctionMap<Context, MachineEvents> = {
   assignAuthenticationResponse: assign((context, { payload }: any) => ({
     ...context,
     ...payload,
   })),
+
+  assignManuallyFetchedAccessToken: assign((context) => {
+    return {
+      accessToken: REACT_APP_ACCESS_TOKEN_FOR_DEBUGGING,
+      isAuthenticated: true,
+    };
+  }),
 
   incrementAuthenticationAttempts: assign({
     authenticationAttempts: ({ authenticationAttempts = 0 }) =>
@@ -27,9 +36,9 @@ export const actions: ActionFunctionMap<Context, MachineEvents> = {
 
   clearUrlParams: assign((context) => ({
     ...context,
-    instanceGuid: '',
-    signatoryGuid: '',
-    claimCode: '',
+    instanceGuid: "",
+    signatoryGuid: "",
+    claimCode: "",
     anonymousLogin: false,
     loggedInAsGuest: false,
   })),
@@ -39,5 +48,10 @@ export const actions: ActionFunctionMap<Context, MachineEvents> = {
     loggedInAsGuest: true,
   })),
 
-  logTokenExpired: () => console.log('Token expired.'),
-}
+  setAuthorizeToTrue: assign((context) => ({
+    ...context,
+    isAuthorized: true,
+  })),
+
+  logTokenExpired: () => console.log("Token expired."),
+};

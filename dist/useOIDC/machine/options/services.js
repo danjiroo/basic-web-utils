@@ -100,7 +100,9 @@ exports.services = {
                         ? Object.assign(Object.assign({}, request.internal), { client_secret: REACT_APP_ADMIN_CLIENT_SECRET, scope: REACT_APP_SCOPE }) : {},
                 });
                 AuthorizationServiceConfiguration.fetchFromIssuer(REACT_APP_AUTH_SERVER, new FetchRequestor())
-                    .then((response) => tokenHandler.performTokenRequest(response, requestToken))
+                    .then((response) => {
+                    return tokenHandler.performTokenRequest(response, requestToken);
+                })
                     .then((response) => __awaiter(void 0, void 0, void 0, function* () {
                     const { accessToken } = response;
                     accessToken &&

@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.options = void 0;
 const actions_1 = require("./actions");
 const services_1 = require("./services");
+const { REACT_APP_ACCESS_TOKEN_FOR_DEBUGGING = "" } = process.env;
 exports.options = {
     actions: actions_1.actions,
     services: services_1.services,
@@ -21,7 +22,7 @@ exports.options = {
             return !!waitForUserAction;
         },
         hasParamater: ({ instanceGuid: i, signatoryGuid: s, claimCode: c }) => {
-            return Boolean(i || s || c);
+            return Boolean(c || i || s);
         },
         hasParamaterViaEvent: ({ instanceGuid, signatoryGuid, claimCode, anonymousLogin }, { payload }) => {
             const { instanceGuid: eventInstanceGuid, signatoryGuid: eventSignatoryGuid, claimCode: eventClaimCode, anonymousLogin: eventAnonymousLogin, } = payload;
@@ -43,6 +44,15 @@ exports.options = {
         isSignatoryGuid: ({ signatoryGuid }) => Boolean(signatoryGuid),
         hasClaimCode: ({ claimCode }) => Boolean(claimCode),
         anonymousLoginEnabled: ({ anonymousLogin }) => !!anonymousLogin,
+        isAuthorized: ({ isAuthorized = false, isAuthenticated = false }) => {
+            return Boolean(isAuthorized && !isAuthenticated);
+        },
+        isNotAuthenticated: ({ isAuthorized = false, isAuthenticated = false }) => {
+            return Boolean(!isAuthenticated);
+        },
         unauthenticated: (_, __, { state }) => !(state === null || state === void 0 ? void 0 : state.matches("authenticated")),
+        oidcDisabledForTesting: () => {
+            return Boolean(REACT_APP_ACCESS_TOKEN_FOR_DEBUGGING);
+        },
     },
 };

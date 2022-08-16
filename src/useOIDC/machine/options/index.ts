@@ -8,6 +8,8 @@ import { Context, MachineEvents } from "../types";
 import { actions } from "./actions";
 import { services } from "./services";
 
+const { REACT_APP_ACCESS_TOKEN_FOR_DEBUGGING = "" } = process.env;
+
 export const options: MachineOptions<Context, MachineEvents> = {
   actions,
   services,
@@ -29,7 +31,7 @@ export const options: MachineOptions<Context, MachineEvents> = {
       return !!waitForUserAction;
     },
     hasParamater: ({ instanceGuid: i, signatoryGuid: s, claimCode: c }) => {
-      return Boolean(i || s || c);
+      return Boolean(c || i || s);
     },
     hasParamaterViaEvent: (
       { instanceGuid, signatoryGuid, claimCode, anonymousLogin },
@@ -62,6 +64,15 @@ export const options: MachineOptions<Context, MachineEvents> = {
     isSignatoryGuid: ({ signatoryGuid }) => Boolean(signatoryGuid),
     hasClaimCode: ({ claimCode }) => Boolean(claimCode),
     anonymousLoginEnabled: ({ anonymousLogin }) => !!anonymousLogin,
+    isAuthorized: ({ isAuthorized = false, isAuthenticated = false }) => {
+      return Boolean(isAuthorized && !isAuthenticated);
+    },
+    isNotAuthenticated: ({ isAuthorized = false, isAuthenticated = false }) => {
+      return Boolean(!isAuthenticated);
+    },
     unauthenticated: (_, __, { state }) => !state?.matches("authenticated"),
+    oidcDisabledForTesting: () => {
+      return Boolean(REACT_APP_ACCESS_TOKEN_FOR_DEBUGGING);
+    },
   },
 };

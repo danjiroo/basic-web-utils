@@ -42,9 +42,9 @@ const default_context = {
 const spawn = (config, options) => (0, xstate_1.createMachine)(Object.assign(Object.assign({}, config), { context: Object.assign({}, default_context) }), options);
 exports.spawn = spawn;
 const useOIDC = (params) => {
-    var _a, _b, _c, _d, _e;
-    const location = (0, react_router_dom_1.useLocation)();
+    // const location = useLocation();
     const navigate = (0, react_router_dom_1.useHistory)();
+    const { instanceGuid, signatoryGuid, claimCode, anonymousLogin } = params !== null && params !== void 0 ? params : {};
     const [hasTokenExpired, setHasTokenExpired] = (0, react_1.useState)(false);
     const stateDefinition = typeof window !== "undefined" ? localStorage.getItem("oidc") : undefined;
     const noId = `idless-machine-${new Date().toLocaleTimeString()}`;
@@ -81,19 +81,12 @@ const useOIDC = (params) => {
     const compare = (prev, current) => prev === current;
     const state = (0, react_2.useSelector)(recordService, selectedState, compare);
     // const URL = typeof window !== 'undefined' ? window.location.href : ''
-    const search = (_a = (0, react_router_dom_1.useLocation)()) === null || _a === void 0 ? void 0 : _a.search;
-    const instanceGuid = (_b = new URLSearchParams(search)) === null || _b === void 0 ? void 0 : _b.get("instance_guid");
-    const signatoryGuid = (_c = new URLSearchParams(search)) === null || _c === void 0 ? void 0 : _c.get("signatory_guid");
-    const claimCode = (_d = new URLSearchParams(search)) === null || _d === void 0 ? void 0 : _d.get("claim_code");
-    const anonymousLogin = (_e = new URLSearchParams(search)) === null || _e === void 0 ? void 0 : _e.get("allow_anonymous");
+    // const search = useLocation()?.search;
+    // const instanceGuid = new URLSearchParams(search)?.get("instance_guid");
+    // const signatoryGuid = new URLSearchParams(search)?.get("signatory_guid");
+    // const claimCode = new URLSearchParams(search)?.get("claim_code");
+    // const anonymousLogin = new URLSearchParams(search)?.get("allow_anonymous");
     const urlParams = [instanceGuid, signatoryGuid, claimCode, anonymousLogin];
-    let anonLogin = false;
-    try {
-        anonLogin = JSON.parse(anonymousLogin !== null && anonymousLogin !== void 0 ? anonymousLogin : "false");
-    }
-    catch (error) {
-        console.error("Error: url param allow_anonymous invalid");
-    }
     // useEffect(() => {
     //   if (
     //     URL === `${REACT_APP_REDIRECT_URI}/` &&
@@ -102,14 +95,13 @@ const useOIDC = (params) => {
     //     send('EMTPY_OUT_LOCAL_STORAGE')
     //   }
     // }, [state])
-    (0, react_1.useEffect)(() => {
-        if (search === null || search === void 0 ? void 0 : search.includes("code"))
-            return;
-        send("RESTART");
-    }, []);
-    (0, react_1.useEffect)(() => {
-        send("START_MACHINE");
-    }, [location]);
+    // useEffect(() => {
+    //   if (search?.includes('code')) return
+    //   send('RESTART')
+    // }, [])
+    // useEffect(() => {
+    //   send('START_MACHINE')
+    // }, [])
     (0, react_1.useEffect)(() => {
         if (urlParams.some((params) => params)) {
             send({
@@ -118,7 +110,7 @@ const useOIDC = (params) => {
                     instanceGuid: instanceGuid !== null && instanceGuid !== void 0 ? instanceGuid : "",
                     signatoryGuid: signatoryGuid !== null && signatoryGuid !== void 0 ? signatoryGuid : "",
                     claimCode: claimCode !== null && claimCode !== void 0 ? claimCode : "",
-                    anonymousLogin: anonLogin,
+                    anonymousLogin: anonymousLogin !== null && anonymousLogin !== void 0 ? anonymousLogin : false,
                 },
             });
         }
@@ -139,6 +131,9 @@ const useOIDC = (params) => {
         },
         handleTokenExpired: () => {
             send("TOKEN_EXPIRED");
+        },
+        handleReAuthorize: () => {
+            send("REAUTHORIZE");
         },
     };
     return [state, exposedActions, hasTokenExpired];

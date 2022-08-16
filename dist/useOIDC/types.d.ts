@@ -10,4 +10,5 @@ export interface ExposedActions {
     handleLogin: () => void;
     handleLoginAsGuest: () => void;
     handleTokenExpired: () => void;
+    handleReAuthorize: () => void;
 }

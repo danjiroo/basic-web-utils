@@ -79,6 +79,7 @@ export const services: any = {
                 response,
                 authRequest
               );
+
               send("AUTHORIZED");
             });
           } catch (error) {
@@ -144,9 +145,9 @@ export const services: any = {
               REACT_APP_AUTH_SERVER!,
               new FetchRequestor()
             )
-              .then((response: any) =>
-                tokenHandler.performTokenRequest(response, requestToken)
-              )
+              .then((response: any) => {
+                return tokenHandler.performTokenRequest(response, requestToken);
+              })
               .then(async (response: any) => {
                 const { accessToken } = response;
 

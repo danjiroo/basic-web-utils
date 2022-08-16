@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-empty */
 import { useEffect, useState } from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { createMachine, State } from "xstate";
 import { useInterpret, useSelector } from "@xstate/react";
 
@@ -35,8 +35,11 @@ export const spawn = <Config, Options>(config: Config, options: Options) =>
 export const useOIDC = (
   params?: ConfigParams
 ): [State<Context>, ExposedActions, boolean] => {
-  const location = useLocation();
+  // const location = useLocation();
   const navigate = useHistory();
+
+  const { instanceGuid, signatoryGuid, claimCode, anonymousLogin } =
+    params ?? {};
 
   const [hasTokenExpired, setHasTokenExpired] = useState<boolean>(false);
 
@@ -91,20 +94,12 @@ export const useOIDC = (
   const state = useSelector(recordService, selectedState, compare);
 
   // const URL = typeof window !== 'undefined' ? window.location.href : ''
-  const search = useLocation()?.search;
-  const instanceGuid = new URLSearchParams(search)?.get("instance_guid");
-  const signatoryGuid = new URLSearchParams(search)?.get("signatory_guid");
-  const claimCode = new URLSearchParams(search)?.get("claim_code");
-  const anonymousLogin = new URLSearchParams(search)?.get("allow_anonymous");
+  // const search = useLocation()?.search;
+  // const instanceGuid = new URLSearchParams(search)?.get("instance_guid");
+  // const signatoryGuid = new URLSearchParams(search)?.get("signatory_guid");
+  // const claimCode = new URLSearchParams(search)?.get("claim_code");
+  // const anonymousLogin = new URLSearchParams(search)?.get("allow_anonymous");
   const urlParams = [instanceGuid, signatoryGuid, claimCode, anonymousLogin];
-
-  let anonLogin = false;
-
-  try {
-    anonLogin = JSON.parse(anonymousLogin ?? "false");
-  } catch (error) {
-    console.error("Error: url param allow_anonymous invalid");
-  }
 
   // useEffect(() => {
   //   if (
@@ -115,15 +110,15 @@ export const useOIDC = (
   //   }
   // }, [state])
 
-  useEffect(() => {
-    if (search?.includes("code")) return;
+  // useEffect(() => {
+  //   if (search?.includes('code')) return
 
-    send("RESTART");
-  }, []);
+  //   send('RESTART')
+  // }, [])
 
-  useEffect(() => {
-    send("START_MACHINE");
-  }, [location]);
+  // useEffect(() => {
+  //   send('START_MACHINE')
+  // }, [])
 
   useEffect(() => {
     if (urlParams.some((params) => params)) {
@@ -133,7 +128,7 @@ export const useOIDC = (
           instanceGuid: instanceGuid ?? "",
           signatoryGuid: signatoryGuid ?? "",
           claimCode: claimCode ?? "",
-          anonymousLogin: anonLogin,
+          anonymousLogin: anonymousLogin ?? false,
         },
       });
     }
@@ -155,6 +150,9 @@ export const useOIDC = (
     },
     handleTokenExpired: () => {
       send("TOKEN_EXPIRED");
+    },
+    handleReAuthorize: () => {
+      send("REAUTHORIZE");
     },
   };
 
