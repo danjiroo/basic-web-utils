@@ -20,7 +20,7 @@ react_modal_1.default.defaultStyles = {
         right: 0,
         bottom: 0,
         width: "100%",
-        height: "100%",
+        height: "100vh",
         zIndex: 1000,
     },
     content: {
