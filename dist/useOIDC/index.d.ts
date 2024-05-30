@@ -1,0 +1,46 @@
+import { State } from "xstate";
+import { Context, ConfigParams } from "./machine";
+import { ExposedActions } from "./types";
+export * from "./types";
+export * from "./machine";
+export declare const spawn: <Config, Options>(config: Config, options: Options) => import("xstate").StateMachine<{
+    accessToken?: string | null | undefined;
+    expiresIn?: null | undefined;
+    idToken?: string | null | undefined;
+    issuedAt?: number | null | undefined;
+    refreshToken?: string | null | undefined;
+    scope?: string | null | undefined;
+    tokenType?: string | null | undefined;
+    isAuthenticated?: boolean | undefined;
+    isAuthorized?: boolean | undefined;
+    authenticationAttempts?: number | undefined;
+    maxAuthenticationAttempts?: 3 | undefined;
+    waitForUserAction?: boolean | undefined;
+    instanceGuid?: string | undefined;
+    signatoryGuid?: string | undefined;
+    claimCode?: string | undefined;
+    anonymousLogin?: boolean | undefined;
+    loggedInAsGuest?: boolean | undefined;
+}, any, import("xstate").AnyEventObject, {
+    value: any;
+    context: {
+        accessToken?: string | null | undefined;
+        expiresIn?: null | undefined;
+        idToken?: string | null | undefined;
+        issuedAt?: number | null | undefined;
+        refreshToken?: string | null | undefined;
+        scope?: string | null | undefined;
+        tokenType?: string | null | undefined;
+        isAuthenticated?: boolean | undefined;
+        isAuthorized?: boolean | undefined;
+        authenticationAttempts?: number | undefined;
+        maxAuthenticationAttempts?: 3 | undefined;
+        waitForUserAction?: boolean | undefined;
+        instanceGuid?: string | undefined;
+        signatoryGuid?: string | undefined;
+        claimCode?: string | undefined;
+        anonymousLogin?: boolean | undefined;
+        loggedInAsGuest?: boolean | undefined;
+    };
+}, import("xstate").BaseActionObject, import("xstate").ServiceMap, import("xstate").ResolveTypegenMeta<import("xstate").TypegenDisabled, import("xstate").AnyEventObject, import("xstate").BaseActionObject, import("xstate").ServiceMap>>;
+export declare const useOIDC: (params?: ConfigParams | undefined) => [State<Context>, ExposedActions, boolean];
